@@ -1,0 +1,4 @@
+Bottom Navigation Notes:
+- Put 'BottomNavigatorBar.js' in your components folder.
+- Add what's inbetween the comments to your App.js file.
+- Note: You need to change the 'export default' function to 'export default class App extends React.Component'
