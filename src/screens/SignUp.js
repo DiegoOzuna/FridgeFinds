@@ -1,63 +1,49 @@
-import { useNavigation } from '@react-navigation/core'
+
 import React, { useEffect, useState } from 'react' //this library allows us to keep user inputs
 import { KeyboardAvoidingView, StyleSheet, TextInput, Text, TouchableOpacity, View } from 'react-native'
-import { signInWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { FIREBASE_AUTH } from '../firebase'
-
 // the imports KeyboardAvoidingView, StyleSheet, TextInput, etc, are all imported for their properties which allow us to style them
-const LoginScreen = () => {
+const SignUp = () => {
     //These are used to keep the values of user input
+    const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
-    //This theoretically will allow us to have "loading icons" in future
-    const [loading, setLoading] = useState(false)
-
-    //navigation is used to transfer signed in user to new page
-    const navigation = useNavigation()
-
-    //new expo go requires auth to be in file and passed through functions
+    //we need auth constant
     const auth = FIREBASE_AUTH;
 
-    //THIS IS A LISTENER, ONCE THE USERS STATE CHANGES TO SIGNED IN
-    //THEY WILL BE REDIRECTED TO THE HOME PAGE
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged(user => {
-            if(user){
-                navigation.navigate("Home")
-            }
-    })
-
-    return unsubscribe //unsubscribe is used to stop pinging listener when user signs in.
-
-}, [])
-
-    //THIS FUNCTION IS USED TO CHECK EMAIL AND PASSWORD
-    //AND CHECK AGAINST FIREBASE TO LOGIN, ELSE ERROR
-    // Past versions of firebase used auth.signInWithEmailAndPassword(email, password)
-    // but has since changed from this format. Now we call funciton directly, and pass auth
-    const handleLogin = async () => {
+    //THE FOLLOWING IS THE LOGIC FOR THE DATA TO GO INTO OUR FIREBASE
+    const handleSignUp = async () => {
         try{
-            const userCredentials = await signInWithEmailAndPassword(auth,email,password);
+            const userCredentials = await createUserWithEmailAndPassword(auth,email,password); //makes new user and inputs to database
             console.log('Logged in with:', userCredentials.email); //this is just for us to see in terminal that user info was passed
             }
         catch (error){
             console.log(error)
         }
         finally{
-            console.log('Success :)')
+            console.log('Creation Success :)')
         }
-    }
-
+    } //this is just for us to see in terminal that user info was passed
+   
 
     return (
         <KeyboardAvoidingView
             style = {styles.container}
             behavior="padding"
         >
-            <Text style = {styles.header}>Hello Again!
+            <Text style = {styles.header}>Sign Up!
             </Text>
             <View style={styles.inputContainer}>
+                <TextInput
+                    placeholder = "Enter your name" 
+                    //this makes the input box have a grayed out text "enter your name" for user to know what is being filled in
+                    value = { name }
+                    //grabs user input in this field and sets into variable name
+                    onChangeText={text=>setName(text)}
+                    style = {styles.input}
+                />
                 <TextInput
                     placeholder = "Enter your email" 
                     //this makes the input box have a grayed out text "email" for user to know what is being filled in
@@ -79,23 +65,17 @@ const LoginScreen = () => {
 
             <View style={styles.buttonContainer}>
                 <TouchableOpacity //this makes a touchable object
-                    onPress={handleLogin}
+                    onPress={() => { }}
                     style={styles.button} //format it to a button
                 >
-                    <Text style={styles.buttonText}>Login</Text>
-                </TouchableOpacity>
-                <TouchableOpacity //this is another instance of button
-                    onPress={() => navigation.navigate('SignUp')} //when user clicks register, they will be redirected to other page.
-                    style={[styles.button , styles.buttonOutline]} 
-                >
-                    <Text style={styles.buttonOutlineText}>Register</Text> 
+                    <Text style={styles.buttonText}>Create Account</Text>
                 </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>
     )
 }
 
-export default LoginScreen
+export default SignUp
 
 const styles = StyleSheet.create({
     container: {
@@ -155,3 +135,4 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 })
+
