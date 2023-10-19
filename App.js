@@ -14,8 +14,14 @@ const Stack = createNativeStackNavigator();
 //we need to import our made pages to add into stack
 import LoginScreen from './src/screens/LoginScreen';
 import HomeScreen from './src/screens/HomeScreen';
-import SignUp from './src/screens/SignUp'
-import ForgotPassword from './src/screens/ForgotPage'
+import SignUp from './src/screens/SignUp';
+import ForgotPassword from './src/screens/ForgotPage';
+
+//these will be imports for our "inner pages"
+import UserPage from './src/screens/InnerScreens/UserPage';
+import ShopListPage from './src/screens/InnerScreens/ShopListPage';
+import RecipePage from './src/screens/InnerScreens/RecipePage';
+
 
 
 export default function App() {
@@ -27,6 +33,10 @@ export default function App() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="SignUp" component={SignUp} />
         {/*<Stack.Screen name="Forgot" component={ForgotPage} />*/}
+
+        <Stack.Screen name="UserPage" component={UserPage} />
+        <Stack.Screen name="ShopListPage" component={ShopListPage} />
+        <Stack.Screen name="RecipePage" component={RecipePage} />
       </Stack.Navigator>
     </NavigationContainer>
   );

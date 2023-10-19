@@ -1,5 +1,7 @@
 // From Katlyn
 
+import { useNavigation } from '@react-navigation/core'; //added to have other pages be navigated to.
+
 import React, {useState} from 'react';
 import { View, Text, Pressable, StatusBar } from 'react-native';
 
@@ -11,6 +13,9 @@ const BottomNavigationBar = (props) => {
     const { screenText, changeText } = props;
     const iconHeight = 25;
     const iconWidth = 25;
+
+    const navigation = useNavigation() //<- allows us to use our navigation stack in our app,
+
     return(
         <View style={styles.container}>
 
@@ -28,19 +33,19 @@ const BottomNavigationBar = (props) => {
           <View style={styles.NavBar}>
 
             {/*Fridge Button (Left)*/}
-            <Pressable onPress={() => changeText('Fridge')} style={styles.IconBehave}
+            <Pressable onPress={() => navigation.navigate('UserPage')} style={styles.IconBehave}
             android_ripple={{borderless:true, radius:50}}>
               <Icon name="shopping-cart" height={iconHeight} width={iconWidth} color='black'/>
             </Pressable>
 
             {/*Notebook Button (Middle)*/}
-            <Pressable onPress={() => changeText('List')} style={styles.IconBehave}
+            <Pressable onPress={() => navigation.navigate('RecipePage')} style={styles.IconBehave}
             android_ripple={{borderless:true, radius:50}}>
               <Icon name="show-menu-button" height={iconHeight} width={iconWidth} color='black'/>
             </Pressable>
 
             {/*Chef Hat Button (Right)*/}
-            <Pressable onPress={() => changeText('Cook')} style={styles.IconBehave}
+            <Pressable onPress={() => navigation.navigate('ShopListPage')} style={styles.IconBehave}
             android_ripple={{borderless:true, radius:50}}>
               <Icon name="user-account-box" height={iconHeight} width={iconWidth} color='black'/>
             </Pressable>
