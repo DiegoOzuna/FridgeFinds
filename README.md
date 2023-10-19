@@ -15,7 +15,8 @@ npm install @react-navigation/native-stack <br/>
 npx expo install react-native-screens react-native-safe-area-context <br/>
 npx expo install firebase <br/>
 
-Then finally you could do npm start and then run the emulator by pressing 'a' on keyboard. Hope this helps
-[splash+login.webm](https://github.com/DiegoOzuna/FridgeFinds/assets/91403113/66e870e6-0573-4ec5-9bd9-53306357c01f)
+Then finally you could do npm start and then run the emulator by pressing 'a' on keyboard. Hope this helps <br/>
 
-[Register+Sign in+ homepages.webm](https://github.com/DiegoOzuna/FridgeFinds/assets/91403113/d039044a-0334-49a6-884a-a04e06cae636)
+[splash+login.webm](https://github.com/DiegoOzuna/FridgeFinds/assets/91403113/66e870e6-0573-4ec5-9bd9-53306357c01f) 
+
+[Register+Sign in+ homepages.webm](https://github.com/DiegoOzuna/FridgeFinds/assets/91403113/d039044a-0334-49a6-884a-a04e06cae636) 
