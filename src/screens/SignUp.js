@@ -65,7 +65,7 @@ const SignUp = () => {
 
             <View style={styles.buttonContainer}>
                 <TouchableOpacity //this makes a touchable object
-                    onPress={() => { }}
+                    onPress={handleSignUp}
                     style={styles.button} //format it to a button
                 >
                     <Text style={styles.buttonText}>Create Account</Text>
