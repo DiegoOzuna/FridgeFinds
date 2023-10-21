@@ -34,9 +34,9 @@ export default function App() {
         <Stack.Screen name="SignUp" component={SignUp} />
         {/*<Stack.Screen name="Forgot" component={ForgotPage} />*/}
 
-        <Stack.Screen name="UserPage" component={UserPage} />
-        <Stack.Screen name="ShopListPage" component={ShopListPage} />
-        <Stack.Screen name="RecipePage" component={RecipePage} />
+        <Stack.Screen options={{headerShown: false, animation: 'default'}} name="UserPage" component={UserPage} /> 
+        <Stack.Screen options={{headerShown: false, animation: 'default'}} name="RecipePage" component={RecipePage} /> 
+        <Stack.Screen options={{headerShown: false, animation: 'default'}} name="ShopListPage" component={ShopListPage} /> 
       </Stack.Navigator>
     </NavigationContainer>
   );
