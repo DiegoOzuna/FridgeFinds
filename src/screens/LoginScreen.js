@@ -39,13 +39,12 @@ const LoginScreen = () => {
     const handleLogin = async () => {
         try{
             const userCredentials = await signInWithEmailAndPassword(auth,email,password);
-            console.log('Logged in with:', userCredentials.email); //this is just for us to see in terminal that user info was passed
             }
         catch (error){
             console.log(error)
         }
         finally{
-            console.log('Success :)')
+            console.log('Success Login :)')
         }
     }
 
