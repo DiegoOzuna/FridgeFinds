@@ -8,24 +8,8 @@ import BottomNavigationBar from '../components/BottomNavigatorBar';
 // end of imports for bottomnavigation bar
 
 import { FIREBASE_AUTH } from '../../firebase';
-import { onAuthStateChanged } from "firebase/auth";
 import { signOut } from "firebase/auth";
 import { useNavigation } from '@react-navigation/core'
-
-//this function will be used to get the user signed out and redirected to login page
-handleSignOut = () => {
-  const navigation = useNavigation();
-  signOut(FIREBASE_AUTH).then(() => {
-    console.log('User signed out!');
-    // Reset the navigation state and navigate to the login page
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'LoginScreen' }], // replace 'Login' with the name of your login screen in your navigator
-    });
-  }).catch((error) => {
-    console.error('Error signing out: ', error);
-  });
-}
 
 
 //HAD TO CONVERT CLASS COMPONENT TO FUNCTIONAL COMPONENT AS IT IS ONLY WAY TO USE HOOKS TO SIGN USER OUT.
