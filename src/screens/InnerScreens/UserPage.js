@@ -1,33 +1,48 @@
 //place holder for area where user's current ingredients are
-//These imports are to have our bottomnavigation bar be on screen
+//These imports are to have our bottomnavigation bar be on screen as well as other components
 import React from 'react';
-import { StatusBar, Text, TouchableOpacity } from 'react-native';
-import { StyleSheet, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  SafeAreaView,
+  SectionList,
+  StatusBar,
+} from 'react-native';
 
 import BottomNavigationBar from '../components/BottomNavigatorBar';
 // end of imports for bottomnavigation bar
 
-import { FIREBASE_AUTH } from '../../firebase';
-import { signOut } from "firebase/auth";
+import { FIREBASE_AUTH, FIRESTORE_DB } from '../../firebase';
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigation } from '@react-navigation/core'
 
 
 //HAD TO CONVERT CLASS COMPONENT TO FUNCTIONAL COMPONENT AS IT IS ONLY WAY TO USE HOOKS TO SIGN USER OUT.
 const UserPage = () => {
   const navigation = useNavigation();  //const points to navigate stack
+ 
+  //Improved signout by properly having an auth listener to redirect user if they pressed on sign out.
+  //This also allows us to have the proper user.uid to store user info.
+  onAuthStateChanged(FIREBASE_AUTH, (user) => {
+    if(user){
+      const uid = user.uid;
+    } else {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+    });
+  }});
+
+
 
   //handlesignout signs out user and redirects back to login
   const handleSignOut = () => {
     signOut(FIREBASE_AUTH).then(() => {
       console.log('User signed out!');
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Login' }],
       });
-    }).catch((error) => {
-      console.error('Error signing out: ', error);
-    });
-  };
+    };
 
 
   return (
