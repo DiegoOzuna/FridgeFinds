@@ -3,6 +3,10 @@ import React, { useEffect, useState } from 'react' //this library allows us to k
 import { KeyboardAvoidingView, StyleSheet, TextInput, Text, TouchableOpacity, View } from 'react-native'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { FIREBASE_AUTH } from '../firebase'
+
+import { FIRESTORE_DB } from '../firebase' //allows us to reference to the database of our app
+import {doc, setDoc} from 'firebase/firestore'; //allows us to actually utilize functions of the database
+
 // the imports KeyboardAvoidingView, StyleSheet, TextInput, etc, are all imported for their properties which allow us to style them
 const SignUp = () => {
     //These are used to keep the values of user input
@@ -12,12 +16,18 @@ const SignUp = () => {
 
     //we need auth constant
     const auth = FIREBASE_AUTH;
+    //firestore constant
+    const database = FIRESTORE_DB;
 
     //THE FOLLOWING IS THE LOGIC FOR THE DATA TO GO INTO OUR FIREBASE
     const handleSignUp = async () => {
         try{
-            const userCredentials = await createUserWithEmailAndPassword(auth,email,password); //makes new user and inputs to database
-            console.log('Logged in with:', userCredentials.email); //this is just for us to see in terminal that user info was passed
+            const userCredentials = await createUserWithEmailAndPassword(auth,email,password); //makes new user and inputs to authentication service
+            const userDoc = doc(database, "users", userCredentials.user.uid);                  //initialize database holder using users ID
+            await setDoc(userDoc,{           //each users info will be stored just in case. This also allows us to sync future user data.
+                name: name,
+                email: email,
+            });
             }
         catch (error){
             console.log(error)
