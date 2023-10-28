@@ -1,8 +1,10 @@
+// Imports from React and React Native.
 import React from 'react';
-import { StatusBar } from 'react-native';
-import { StyleSheet, View } from 'react-native';
+import { StatusBar, StyleSheet, View } from 'react-native';
 
-import BottomNavigationBar from './components/BottomNavigatorBar';
+// Custom Imports
+import BottomNavigationBar from './components/BottomNavigatorBar'; // The Bottom Navigatiion Bar Component
+import { container } from './styles/styles';
 
 
 // Changed it to class instead of a function -> N1
@@ -29,8 +31,9 @@ export default class App extends React.Component{
   render(){
     return(
 
+
       // ~~~~~ Bottom Navigation ~~~~~ //
-      <View style={styles.container}>
+      <View style={container}>
         <StatusBar style='auto'/>
         <BottomNavigationBar screenText={this.state.screenText} changeText={this.changeText}/>
       </View>
@@ -40,10 +43,5 @@ export default class App extends React.Component{
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff', // Background color of the app.,
-    color: '#3ac78b',
-    alignItems: 'center'
-  }
+  
 });
