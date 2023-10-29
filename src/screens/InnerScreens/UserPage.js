@@ -9,14 +9,16 @@ import {
   SafeAreaView,
   SectionList,
   StatusBar,
+  ScrollView,
 } from 'react-native';
 
-import BottomNavigationBar from '../components/BottomNavigatorBar';
+//import BottomNavigationBar from '../components/BottomNavigatorBar';
 // end of imports for bottomnavigation bar
 
 import { FIREBASE_AUTH, FIRESTORE_DB } from '../../firebase';
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigation } from '@react-navigation/core'
+import { container } from '../../styles';
 
 
 //HAD TO CONVERT CLASS COMPONENT TO FUNCTIONAL COMPONENT AS IT IS ONLY WAY TO USE HOOKS TO SIGN USER OUT.
@@ -44,7 +46,6 @@ const UserPage = () => {
       });
     };
 
-
   return (
     <View style={styles.container}>
       <StatusBar style='auto'/>
@@ -55,7 +56,7 @@ const UserPage = () => {
         <Text style = {styles.buttonText}>Sign Out</Text>
         </TouchableOpacity>
       </View>
-      <BottomNavigationBar/>
+      
     </View>
   );
 };
@@ -63,7 +64,7 @@ const UserPage = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff', // Background color of the app.,
