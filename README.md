@@ -20,6 +20,3 @@ Then finally you could do npm start and then run the emulator by pressing 'a' on
 Alternatively, you could just download expo go on your apple/android device. Then you open up your camera on said device and scan the QR code that should show when you did npm start. <br/>
 Hope this helps. <br/>
 
-[splash+login.webm](https://github.com/DiegoOzuna/FridgeFinds/assets/91403113/66e870e6-0573-4ec5-9bd9-53306357c01f)
-
-[Register+Sign in+ homepages.webm](https://github.com/DiegoOzuna/FridgeFinds/assets/91403113/d039044a-0334-49a6-884a-a04e06cae636)
