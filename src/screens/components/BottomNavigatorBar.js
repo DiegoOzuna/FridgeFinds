@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/core'; //added to have other pages be navigated to.
 
-import React, {useState} from 'react';
+import React from 'react';
 import { View, Text, Pressable, StatusBar } from 'react-native';
 
 // For the Bottom Navigation Bar
@@ -9,7 +9,7 @@ import { container } from '../../styles'; // The common style
 
 
 const BottomNavigationBar = (props) => {
-    const { screenText, changeText } = props;
+    const { screenText } = props;
     const iconHeight = 25;
     const iconWidth = 25;
 
