@@ -27,6 +27,8 @@ const SignUp = () => {
             await setDoc(userDoc,{           //each users info will be stored just in case. This also allows us to sync future user data.
                 name: name,
                 email: email,
+                grocerylist: [],      //each user has their own grocery list
+                myIngredients: [],    //each user has their own ingredients
             });
             }
         catch (error){
