@@ -1,7 +1,7 @@
 //place holder for area where user's current ingredients are
 //These imports are to have our bottomnavigation bar be on screen
 import React from 'react';
-import { StatusBar, Text, TouchableOpacity } from 'react-native';
+import { StatusBar, Text, TextInput, TouchableOpacity } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 
 import BottomNavigationBar from '../components/BottomNavigatorBar';
@@ -40,6 +40,47 @@ const UserPage = () => {
         <Text style = {styles.buttonText}>Sign Out</Text>
         </TouchableOpacity>
       </View>
+      <View style={styles.middleContainer}>
+            <View>
+                <Text>Receipes to be entered :</Text>
+                <View>
+                    <View>
+                        <TextInput placeholder="Test" style={{justifyContent: 'flex-start',}} />
+                    </View>
+                    <View>
+                        <TextInput placeholder="Test" style={{justifyContent: 'flex-end',}} />
+                    </View>
+                    <View>
+                        <TextInput placeholder="Test" style={{justifyContent: 'flex-end',}} />
+                    </View>
+                    <View>
+                        <TextInput placeholder="Test" style={{justifyContent: 'flex-end',}} />
+                    </View>
+                    <View>
+                        <TextInput placeholder="Test" style={{justifyContent: 'flex-end',}} />
+                    </View>
+                    <View>
+                        <TextInput placeholder="Test" style={{justifyContent: 'flex-end',}} />
+                    </View>
+                    <View>
+                        <TextInput placeholder="Test" style={{justifyContent: 'flex-end',}} />
+                    </View>
+                    <View>
+                        <TextInput placeholder="Test" style={{justifyContent: 'flex-end',}} />
+                    </View>
+                    <View>
+                        <TextInput placeholder="Test" style={{justifyContent: 'flex-end',}} />
+                    </View>
+                    <View>
+                        <TextInput placeholder="Test" style={{justifyContent: 'flex-end',}} />
+                    </View>
+                    <View>
+                        <TextInput placeholder="Test" style={{justifyContent: 'flex-end',}} />
+                    </View>
+                </View>
+            </View>
+
+        </View>
       <BottomNavigationBar/>
     </View>
   );
@@ -59,6 +100,13 @@ const styles = StyleSheet.create({
     width: '60%',
     alignItems: 'flex-start',
     marginTop:40,
+    marginRight:130,
+  },
+
+  middleContainer:{
+    width: '60%',
+    alignItems: 'flex-start',
+    marginTop:60,
     marginRight:130,
   },
 
