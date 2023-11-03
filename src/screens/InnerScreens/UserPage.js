@@ -1,88 +1,133 @@
 //place holder for area where user's current ingredients are
-//These imports are to have our bottomnavigation bar be on screen as well as other components
+//These imports are to have our bottomnavigation bar be on screen
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  SafeAreaView,
-  SectionList,
-  StatusBar,
-} from 'react-native';
+import { StatusBar, Text, TextInput, FlatList, TouchableOpacity,Alert } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import BottomNavigationBar from '../components/BottomNavigatorBar';
 // end of imports for bottomnavigation bar
 
-import { FIREBASE_AUTH, FIRESTORE_DB } from '../../firebase';
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { FIREBASE_AUTH } from '../../firebase';
+import { signOut } from "firebase/auth";
 import { useNavigation } from '@react-navigation/core'
 
 
+
 //HAD TO CONVERT CLASS COMPONENT TO FUNCTIONAL COMPONENT AS IT IS ONLY WAY TO USE HOOKS TO SIGN USER OUT.
+
 const UserPage = () => {
   const navigation = useNavigation();  //const points to navigate stack
- 
-  //Improved signout by properly having an auth listener to redirect user if they pressed on sign out.
-  //This also allows us to have the proper user.uid to store user info.
-  onAuthStateChanged(FIREBASE_AUTH, (user) => {
-    if(user){
-      const uid = user.uid;
-    } else {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Login' }],
-    });
-  }});
-
-
-
+  const [name, onChangeText] = React.useState(0);
+  
   //handlesignout signs out user and redirects back to login
   const handleSignOut = () => {
     signOut(FIREBASE_AUTH).then(() => {
       console.log('User signed out!');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
       });
-    };
+    }).catch((error) => {
+      console.error('Error signing out: ', error);
+    });
+  };
 
+  let addRecipe= item => {
+    database().ref('/fridgelist').push({
+      name: item
+    });
+  };
+ 
 
+  const handleSubmit = () => {
+    console.log('redirecting to AddeRecipePopup');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'AddRecipePage' }],
+    });
+    
+   // Alert.alert('Item saved successfully');
+    console.log('After redirecting to AddeRecipePopup');
+  };
+
+  const handleSearch = () => {
+    console.log('redirecting to SearchPage');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'SearchPage' }],
+    });
+    
+   // Alert.alert('Item saved successfully');
+    console.log('After redirecting to SearchPage');
+  };
+  
   return (
     <View style={styles.container}>
       <StatusBar style='auto'/>
       <View style={styles.topLeftContainer}>
         <TouchableOpacity
-        style = {styles.button}
+        style = {styles.displayText}
         onPress={handleSignOut}>
-        <Text style = {styles.buttonText}>Sign Out</Text>
+        <Text style = {styles.Text}>Sign Out / </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+        style = {styles.displayText}
+        onPress={handleSearch}>
+       <Text style = {styles.displayText}>Search</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+        style = {styles.Text}
+        onPress={handleSubmit}>
+        <Text style = {styles.displayText}>                  Add Recipe</Text>
         </TouchableOpacity>
       </View>
       <BottomNavigationBar/>
+      
     </View>
+
+    
   );
+
 };
+
 
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+   // flexDirection:'row',
     alignItems: 'center',
+    direction:'inherit',
     backgroundColor: '#fff', // Background color of the app.,
     color: '#3ac78b'
   },
 
   topLeftContainer:{
-    width: '60%',
+    flexDirection:'row',
+    justifyContent: 'flex-start',
+   // width: '60%',
     alignItems: 'flex-start',
-    marginTop:40,
-    marginRight:130,
+    direction:'inherit',
+    flexWrap:'nowrap',
+   marginTop:40,
+  //  marginRight:100,
   },
 
+  middleContainer: { 
+    backgroundColor: '#fff',
+    borderRadius:10,
+    marginHorizontal:20,
+    marginVertical:10,
+    padding: 5,
+  },
   button: {
     backgroundColor: '#62d2a2',
-    width: '40%',
+    width: '60%',
     padding: 15,
-    borderRadius: 20,
-    alignItems: 'center'
+    borderRadius: 10,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start'
 
   },
   buttonText: {
@@ -90,6 +135,14 @@ const styles = StyleSheet.create({
     fontSize: 16
 
   },
+  displayText: {
+    alignItems: 'flex-start',
+    backgroundColor: '#62d2a2',
+    color: '#fff',
+    fontSize: 16
+
+  },
 });
 
 export default UserPage;
+
