@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 //import FormButton from '../components/FormButton';
 import BottomNavigationBar from '../components/BottomNavigatorBar';
 import {
@@ -10,6 +10,8 @@ import {
   Alert
 } from 'react-native';
 import { FIREBASE_AUTH } from '../../firebase';
+import { FIRESTORE_DB } from '../../firebase';  //database in our app
+import { getDoc, doc, updateDoc, arrayUnion, arrayRemove, onSnapshot } from '@firebase/firestore';
 
 
 
@@ -20,21 +22,66 @@ let addItem = item => {
 };
 
 export default function AddItem (){
+
+  const user = FIREBASE_AUTH.currentUser;  //this should get us our current user
+  const database = FIRESTORE_DB;
+  const uid = user.uid;
+
+  const [inputValue, setInputValue] = useState('');
+  const [ingredientsList, setIngredientsList] = useState([]);
+
+   //Get the document reference
+   const docRef = doc(database,"users",uid);
+
+
+  function fetchData(docRef) {
+    // Use the get method to fetch the data once
+    getDoc(docRef).then((snapshot) => {
+      const data = snapshot.data();
+      if(data && data.myIngredients){
+        setIngredientsList(data.myIngredients);
+      }
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+
+  useEffect(() => {
+    // Loads the grocery list from Firestore on component mount
+    if(docRef) {
+      fetchData(docRef) //
+    }
+  }, []); // no dependency
+  
+    const addItem = async () => {
+      if(inputValue && docRef){
+        await updateDoc(docRef, {
+          myIngredients: arrayUnion(inputValue),
+        });
+        setInputValue('');
+        fetchData(docRef);
+      }
+    };
+
+    
+
+
+
  const [name, onChangeText] = React.useState(0);
 
 
-const  handleSubmit = () => {
-  //  addItem(name);
-    Alert.alert('Item saved successfully');
-  };
     return (
       <View style={styles.main}>
         <Text style={styles.title}>Add Item</Text>
-        <TextInput style={styles.itemInput} onChangeText={text => onChangeText(text)} />
+        <TextInput
+          style={styles.itemInput}
+          placeholder='Add item to list'
+          value={inputValue}
+          onChangeText={text => setInputValue(text)} />
         <TouchableHighlight
           style={styles.button}
           underlayColor="white"
-          onPress={handleSubmit}
+          onPress={addItem}
         >
           <Text style={styles.buttonText}>Add</Text>
         </TouchableHighlight>

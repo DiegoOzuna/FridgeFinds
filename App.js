@@ -21,7 +21,7 @@ import UserPage from './src/screens/InnerScreens/UserPage';
 import ShopListPage from './src/screens/InnerScreens/ShopListPage';
 import RecipePage from './src/screens/InnerScreens/RecipePage';
 import SearchPage from './src/screens/InnerScreens/SearchPage';
-import AddRecipePage from './src/screens/InnerScreens/AddRecipePage';
+import AddRecipePage from './src/screens/InnerScreens/AddIngredientsPage';
 
 export default function App() {
   return (

@@ -78,7 +78,7 @@ const UserPage = () => {
         <TouchableOpacity
         style = {styles.button}
         onPress={handleSubmit}>
-        <Text style = {styles.displayText}>Add Recipe</Text>
+        <Text style = {styles.displayText}>Add Ingredient</Text>
         </TouchableOpacity>
       </View>
       <BottomNavigationBar/>
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#62d2a2',
-    width: '25%',
+    width: '30%',
     padding: 5,
     borderRadius: 20,
     justifyContent: 'flex-start',
