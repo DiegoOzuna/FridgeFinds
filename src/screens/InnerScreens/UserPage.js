@@ -66,19 +66,19 @@ const UserPage = () => {
       <StatusBar style='auto'/>
       <View style={styles.topLeftContainer}>
         <TouchableOpacity
-        style = {styles.displayText}
+        style = {styles.button}
         onPress={handleSignOut}>
-        <Text style = {styles.Text}>Sign Out / </Text>
+        <Text style = {styles.displayText}>Sign Out </Text>
         </TouchableOpacity>
         <TouchableOpacity
-        style = {styles.displayText}
+        style = {styles.button}
         onPress={handleSearch}>
        <Text style = {styles.displayText}>Search</Text>
         </TouchableOpacity>
         <TouchableOpacity
-        style = {styles.Text}
+        style = {styles.button}
         onPress={handleSubmit}>
-        <Text style = {styles.displayText}>                  Add Recipe</Text>
+        <Text style = {styles.displayText}>Add Recipe</Text>
         </TouchableOpacity>
       </View>
       <BottomNavigationBar/>
@@ -123,11 +123,11 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#62d2a2',
-    width: '60%',
-    padding: 15,
-    borderRadius: 10,
+    width: '25%',
+    padding: 5,
+    borderRadius: 20,
     justifyContent: 'flex-start',
-    alignItems: 'flex-start'
+    alignItems: 'center'
 
   },
   buttonText: {
