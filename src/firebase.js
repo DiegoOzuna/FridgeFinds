@@ -5,6 +5,9 @@ import { initializeApp } from "firebase/app";
 import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore } from 'firebase/firestore'
+
+import { getStorage } from "firebase/storage";
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -28,3 +31,6 @@ export const FIREBASE_AUTH = initializeAuth(FIREBASE_APP, {
 });
 //Initialize Firebase DataBase and reference to this service
 export const FIRESTORE_DB = getFirestore(FIREBASE_APP);
+//Initialize Firebase Storage and reference to this service
+//Allows for us to have user uploaded media.
+export const FIREBASE_STORAGE = getStorage(FIREBASE_APP);
