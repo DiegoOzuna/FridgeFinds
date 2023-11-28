@@ -165,14 +165,3 @@ const styles = StyleSheet.create({
 
 
 export default ShopList
-
-
-// 1. Have an input bar. 
-// 2. Have an add button next this bar {this will submit the input}
-// 2.1. When add button is clicked, we should have a pop up let user select category
-//      there would be 8 categories...
-//      Beverages, Bread/Bakery , Canned/Jarred Goods, Dairy,
-//      Dry/Baking Goods, Frozen Foods, Meat, Produce
-// 3. Display input to screen?  
-
-//new user is list@email.com password is 123456

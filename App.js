@@ -22,6 +22,7 @@ import ShopListPage from './src/screens/InnerScreens/ShopListPage';
 import RecipePage from './src/screens/InnerScreens/RecipePage';
 import SearchPage from './src/screens/InnerScreens/SearchPage';
 import AddRecipePage from './src/screens/InnerScreens/AddIngredientsPage';
+import RecipeForm from './src/screens/components/RecipeForm';
 
 export default function App() {
   return (
@@ -37,7 +38,7 @@ export default function App() {
         <Stack.Screen options={{headerShown: false, animation: 'default'}} name="ShopListPage" component={ShopListPage} /> 
         <Stack.Screen options={{headerShown: false, animation: 'default'}} name="SearchPage" component={SearchPage} /> 
         <Stack.Screen options={{headerShown: false, animation: 'default'}} name="AddRecipePage" component={AddRecipePage} />
- 
+        <Stack.Screen options={{headerShown: false, animation: 'default'}} name="RecipeForm" component={RecipeForm} />
       </Stack.Navigator>
     </NavigationContainer>
   );
