@@ -8,12 +8,13 @@ const RecipeForm = () => {
 
   // Define the options for the dropdown menu
   const typeOptions = [
+    {label: 'Count', value:'unit'},
     {label: 'Ounce', value:'oz'},
     {label: 'Fluid Ounce', value:'fl oz'},
     {label: 'gram', value: 'g'},
     {label: 'Kilogram', value: 'kg'},
-    {label: 'Teaspoon (t or tsp)', value: 'tsp'},
-    {label: 'Tablespoon (T, TB, or tbsp)', value: 'tbsp'},
+    {label: 'Teaspoon', value: 'tsp'},
+    {label: 'Tablespoon', value: 'tbsp'},
     {label: 'Cup', value: 'C'},
     {label: 'Quart', value: 'qt'},
     {label: 'Pound', value:'lb'},
