@@ -3,8 +3,9 @@ import { ScrollView, View, TextInput, Button, StyleSheet, Text } from 'react-nat
 import { Dropdown } from 'react-native-element-dropdown';  // Import the Dropdown component
 
 const RecipeForm = () => {
-  const [inputs, setInputs] = useState([{ item: '', amount: '', type: '' }]);
+  const [ingredient, setIngredient] = useState([{ item: '', amount: '', type: '' }]); //Add a state for ingredients
   const [recipe, setRecipe] = useState([]);
+  const [steps, setSteps] = useState([{ step: '', number: 1 }]);  // Add a new state for steps
 
   // Define the options for the dropdown menu
   const typeOptions = [
@@ -25,37 +26,48 @@ const RecipeForm = () => {
     // Add more options here...
   ];
 
-  const handleChange = (value, name, index) => {
-    const updatedInputs = [...inputs];
-    updatedInputs[index][name] = value;
-    setInputs(updatedInputs);
+  const ihandleChange = (value, name, index) => { //Making sure user input is being captured
+    const updatedIngredients = [...ingredient];
+    updatedIngredients[index][name] = value;
+    setIngredient(updatedIngredients);
   };
 
-  const handleAddInput = () => {
-    setInputs([...inputs, { item: '', amount: '', type: '' }]);
+  const shandleChange = (value, index) => {  // Making sure user input is being caputured
+    const updatedSteps = [...steps];
+    updatedSteps[index]['step'] = value;
+    setSteps(updatedSteps);
   };
 
-  const handleSubmit = () => {
-    setRecipe(inputs);
-    setInputs([{ item: '', amount: '', type: '' }]);  // Reset the form
+  const ihandleAdd = () => { //This makes sure that the ingredient is added into the ingredients array
+    setIngredient([...ingredient, { item: '', amount: '', type: '' }]);
+    console.log(ingredient)
+  };
+
+  const shandleAdd = () => {  // This makes sure that the step is added into the steps array
+    setSteps([...steps, { step: '', number: steps.length + 1 }]);
+  };
+
+  const handleSubmit = () => {  //This will make sure that all data that was inputted will be formatted properly and stored in firebase firestore
+    setRecipe(ingredient);
+    setIngredient([{ item: '', amount: '', type: '' }]);  // Reset the form
   };
 
   return (
     <ScrollView>
       <View style={styles.container}>
         <Text style={styles.title}> Add Your Recipe :) </Text>
-        {inputs.map((input, index) => (
+        {ingredient.map((input, index) => (
           <View style={styles.listContainer} key={index}>
             <View style={styles.ingredientCell}>
-              <TextInput style={styles.input}
+              <TextInput style={styles.descBox}
                 name="item"
                 placeholder="Ingredient"
-                onChangeText={(value) => handleChange(value, 'item', index)}
+                onChangeText={(value) => ihandleChange(value, 'item', index)}
               />
-              <TextInput style={styles.amount}
+              <TextInput style={styles.descBox}
                 name="amount"
                 placeholder="Amount"
-                onChangeText={(value) => handleChange(value, 'amount', index)}
+                onChangeText={(value) => ihandleChange(value, 'amount', index)}
               />
               <Dropdown
                 style={styles.type}
@@ -64,12 +76,28 @@ const RecipeForm = () => {
                 valueField="value"
                 placeholder="Select an item"
                 value={input.type}  // Use the type property of the current input as the value prop
-                onChange={(item) => handleChange(item.value, 'type', index)}
+                onChange={(item) => ihandleChange(item.value, 'type', index)}
               />
             </View>
           </View>
         ))}
-        <Button style={styles.button} title="Add Ingredient" onPress={handleAddInput} />
+        <Button style={styles.button} title="Add Ingredient" onPress={ihandleAdd} />
+
+        {steps.map((input, index) => (  // New map function for steps
+          <View style={styles.listContainer} key={index}>
+            <View style={styles.stepsCell}>
+            <Text>Step {input.number}</Text>
+            <TextInput
+              multiline = {true}
+              style = {styles.descBox}
+              name="step"
+              placeholder="Describe this step..."
+              onChangeText={(value) => shandleChange(value, index)}
+            />
+          </View></View>
+        ))}
+        
+        <Button style={styles.button} title="Add Step" onPress={shandleAdd} />
         <Button style={styles.button} title="Submit" onPress={handleSubmit} />
       </View>
     </ScrollView>
@@ -96,22 +124,19 @@ const styles = StyleSheet.create({
     marginVertical: 15,
   },
 
-  input: {
-    flex: 1,  // Use flex to adjust the width
-    height: 30,  // Adjust the height
-    borderColor: 'gray',
-    borderWidth: 1,
+  stepsCell:{
     marginBottom: 10,
     padding: 10,
+    marginVertical: 15,
   },
 
-  amount: {
-    flex: 1,  // Use flex to adjust the width
-    height: 30,  // Adjust the height
-    borderColor: 'gray',
+  descBox:{
+    flex: 1,
+    borderColor: 'green',
     borderWidth: 1,
-    marginBottom: 10,
-    padding: 10,
+    paddingTop: 3,
+    paddingBottom: 3,
+    paddingLeft:5,
   },
 
   type: {
