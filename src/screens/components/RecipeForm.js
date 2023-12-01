@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
-import { ScrollView, View, TextInput, Button, StyleSheet, Text } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Image, ScrollView, View, TextInput, Button, StyleSheet, Text } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';  // Import the Dropdown component
+import * as ImagePicker from 'expo-image-picker'; //will allow user to choose a photo for recipe
+import { FIREBASE_STORAGE } from '../../firebase'
+import { ref, uploadBytes, deleteObject } from "firebase/storage";
+import { useNavigation } from '@react-navigation/core';
 
 const RecipeForm = () => {
+  const navigation = useNavigation();
   const [ingredient, setIngredient] = useState([{ item: '', amount: '', type: '' }]); //Add a state for ingredients
   const [recipe, setRecipe] = useState([]);
   const [steps, setSteps] = useState([{ step: '', number: 1 }]);  // Add a new state for steps
+  const [image, setImage] = useState(null);  // Add a new state for the image URI
+  const [imageRef, setImageRef] = useState(null);  // Add a new state for the image reference
 
   // Define the options for the dropdown menu
   const typeOptions = [
@@ -25,6 +32,20 @@ const RecipeForm = () => {
     {label: 'Pint', value: 'pt'}
     // Add more options here...
   ];
+
+
+  // Request permission to access the media library
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work!');
+        }
+      }
+    })();
+  }, []);
+
 
   const ihandleChange = (value, name, index) => { //Making sure user input is being captured
     const updatedIngredients = [...ingredient];
@@ -47,15 +68,80 @@ const RecipeForm = () => {
     setSteps([...steps, { step: '', number: steps.length + 1 }]);
   };
 
+  const handleImageUpload = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+  
+      if (!result.canceled) {
+        if (imageRef) {
+          // If there's an existing image, delete it from Firebase Storage
+          try {
+            await deleteObject(imageRef);
+          } catch (error) {
+            console.error('Failed to delete image: ', error);
+          }
+        }
+  
+        setImage(result.assets[0].uri);
+        const newImageRef = await uploadImage(result.assets[0].uri);
+        setImageRef(newImageRef);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+
+
+
+  const uploadImage = async (uri) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const storageRef = ref(FIREBASE_STORAGE, 'images/' + new Date().getTime());
+    await uploadBytes(storageRef, blob);
+    return storageRef; //return the reference to the uploaded image
+};
+
   const handleSubmit = () => {  //This will make sure that all data that was inputted will be formatted properly and stored in firebase firestore
     setRecipe(ingredient);
     setIngredient([{ item: '', amount: '', type: '' }]);  // Reset the form
   };
 
+
+  const handleExit = async () => {
+    // Clear out all variables
+    setIngredient([{ item: '', amount: '', type: '' }]);
+    setRecipe([]);
+    setSteps([{ step: '', number: 1 }]);
+    setImage(null);
+  
+    // Delete the uploaded image from Firebase Storage
+    if (imageRef) {
+      try {
+        await deleteObject(imageRef);
+      } catch (error) {
+        console.error('Failed to delete image: ', error);
+      }
+      setImageRef(null);
+    }
+  
+    // Navigate back to the previous screen
+    navigation.goBack();
+  };
+  
+  
+  
+
   return (
     <ScrollView>
       <View style={styles.container}>
         <Text style={styles.title}> Add Your Recipe :) </Text>
+        <Button style={styles.button} title="Exit" onPress={handleExit} />
         {ingredient.map((input, index) => (
           <View style={styles.listContainer} key={index}>
             <View style={styles.ingredientCell}>
@@ -96,8 +182,9 @@ const RecipeForm = () => {
             />
           </View></View>
         ))}
-        
         <Button style={styles.button} title="Add Step" onPress={shandleAdd} />
+        {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}  
+        <Button style={styles.button} title="Upload Image" onPress={handleImageUpload} />
         <Button style={styles.button} title="Submit" onPress={handleSubmit} />
       </View>
     </ScrollView>
