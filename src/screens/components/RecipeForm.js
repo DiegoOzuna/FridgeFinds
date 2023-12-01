@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Image, ScrollView, View, TextInput, Button, StyleSheet, Text } from 'react-native';
+import { KeyboardAvoidingView, Image, ScrollView, View, TextInput, Button, StyleSheet, Text } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';  // Import the Dropdown component
 import * as ImagePicker from 'expo-image-picker'; //will allow user to choose a photo for recipe
 import { FIREBASE_STORAGE } from '../../firebase'
-import { ref, uploadBytes, deleteObject } from "firebase/storage";
+import { FIRESTORE_DB } from '../../firebase';
+import { ref, uploadBytes, deleteObject, getDownloadURL} from "firebase/storage";
 import { useNavigation } from '@react-navigation/core';
+import { collection, addDoc } from "firebase/firestore";
 
 const RecipeForm = () => {
   const navigation = useNavigation();
   const [ingredient, setIngredient] = useState([{ item: '', amount: '', type: '' }]); //Add a state for ingredients
-  const [recipe, setRecipe] = useState([]);
+  const [recipeName, setRecipeName] = useState(''); //will hold users recipe name
   const [steps, setSteps] = useState([{ step: '', number: 1 }]);  // Add a new state for steps
   const [image, setImage] = useState(null);  // Add a new state for the image URI
   const [imageRef, setImageRef] = useState(null);  // Add a new state for the image reference
@@ -104,13 +106,47 @@ const RecipeForm = () => {
     const blob = await response.blob();
     const storageRef = ref(FIREBASE_STORAGE, 'images/' + new Date().getTime());
     await uploadBytes(storageRef, blob);
-    return storageRef; //return the reference to the uploaded image
-};
-
-  const handleSubmit = () => {  //This will make sure that all data that was inputted will be formatted properly and stored in firebase firestore
-    setRecipe(ingredient);
-    setIngredient([{ item: '', amount: '', type: '' }]);  // Reset the form
+  
+    // Get the download URL of the image
+    const downloadURL = await getDownloadURL(storageRef);
+    return downloadURL; //return the download URL of the uploaded image
   };
+
+  const handleSubmit = async () => {
+    // Format the user input
+    const ingredientNames = ingredient.map(i => i.item);
+    const ingredientAmounts = ingredient.map(i => i.amount);
+    const ingredientTypes = ingredient.map(i => i.type);
+    const stepDescriptions = steps.map(s => s.step);
+  
+    // Add the recipe to Firestore
+    try {
+      const docRef = await addDoc(collection(FIRESTORE_DB, "Recipes"), {
+        name: recipeName,
+        ingredients: {
+          names: ingredientNames,
+          amounts: ingredientAmounts,
+          types: ingredientTypes,
+        },
+        steps: stepDescriptions,
+        imageUrl: imageRef, // store the download URL of the image
+      });
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  
+    // Reset the form
+    setIngredient([{ item: '', amount: '', type: '' }]);
+    setSteps([{ step: '', number: 1 }]);
+    setImage(null);
+    setImageRef(null);
+    setRecipeName('');
+
+    //leave form now.
+    navigation.goBack();
+  };
+
 
 
   const handleExit = async () => {
@@ -138,10 +174,19 @@ const RecipeForm = () => {
   
 
   return (
+  <KeyboardAvoidingView 
+  style={{ flex: 1 }} 
+  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+  >
     <ScrollView>
       <View style={styles.container}>
         <Text style={styles.title}> Add Your Recipe :) </Text>
-        <Button style={styles.button} title="Exit" onPress={handleExit} />
+        <Button style={styles.button} title="Cancel Form" onPress={handleExit} />
+        <TextInput
+        style={styles.descBox}
+        placeholder="Recipe Name"
+        onChangeText={setRecipeName}
+        />
         {ingredient.map((input, index) => (
           <View style={styles.listContainer} key={index}>
             <View style={styles.ingredientCell}>
@@ -187,7 +232,8 @@ const RecipeForm = () => {
         <Button style={styles.button} title="Upload Image" onPress={handleImageUpload} />
         <Button style={styles.button} title="Submit" onPress={handleSubmit} />
       </View>
-    </ScrollView>
+    </ScrollView>   
+  </KeyboardAvoidingView>
   );
 }
 
