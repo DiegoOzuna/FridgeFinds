@@ -15,9 +15,9 @@ npm install @react-navigation/native-stack <br/>
 npm install react-native-screens react-native-safe-area-context <br/>
 npx expo install firebase <br/>
 npm install @react-native-async-storage/async-storage <br/>
-npm install @firebase/storage
-npm install react-native-element-dropdown
-npm install expo-image-picker
+npm install @firebase/storage <br/>
+npm install react-native-element-dropdown <br/>
+npm install expo-image-picker <br/>
 
 Then finally you could do npm start and then run the emulator by pressing 'a' on keyboard. <br/>
 Alternatively, you could just download expo go on your apple/android device. Then you open up your camera on said device and scan the QR code that should show when you did npm start. <br/>
