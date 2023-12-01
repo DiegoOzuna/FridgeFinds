@@ -152,9 +152,10 @@ const RecipeForm = () => {
   const handleExit = async () => {
     // Clear out all variables
     setIngredient([{ item: '', amount: '', type: '' }]);
-    setRecipe([]);
     setSteps([{ step: '', number: 1 }]);
     setImage(null);
+    setImageRef(null);
+    setRecipeName('');
   
     // Delete the uploaded image from Firebase Storage
     if (imageRef) {
