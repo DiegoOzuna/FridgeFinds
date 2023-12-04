@@ -29,6 +29,8 @@ const SignUp = () => {
                 email: email,
                 grocerylist: [],      //each user has their own grocery list
                 myIngredients: [],    //each user has their own ingredients
+                votes: {},            //each user will have their own upvote/downvote
+                favorites: [],        //each user will have their fav recipes
             });
             }
         catch (error){

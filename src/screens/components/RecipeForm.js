@@ -130,6 +130,7 @@ const RecipeForm = () => {
         },
         steps: stepDescriptions,
         imageUrl: imageRef, // store the download URL of the image
+        votes: 0, //Initialize votes as 0
       });
       console.log("Document written with ID: ", docRef.id);
     } catch (e) {
