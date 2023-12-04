@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { StatusBar, TouchableOpacity, Image, StyleSheet, View, Text, TextInput, FlatList } from 'react-native';
+import { Modal, StatusBar, TouchableOpacity, Image, StyleSheet, View, Text, TextInput, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { FIRESTORE_DB, FIREBASE_AUTH }  from '../../firebase'; // import FIRESTORE_DB
 import BottomNavigationBar from '../components/BottomNavigatorBar';
@@ -10,6 +10,10 @@ const RecipePage = () =>  {
   const user = FIREBASE_AUTH.currentUser;  //this should get us our current user
   const database = FIRESTORE_DB;
   const uid = user.uid;
+
+
+  const [modalVisible, setModalVisible] = useState(false); // state to control the visibility of the modal
+  const [selectedRecipe, setSelectedRecipe] = useState(null); // state to hold the selected recipe
 
   const [userData, setUserData] = useState({}); // state to hold user data
 
@@ -139,8 +143,8 @@ const handleDownvote = async (id) => {
         data={recipes.sort((a, b) => b.votes - a.votes)} // sort by votes
         renderItem={({item}) => (
         <View style = {styles.itemContainer}>
-          <TouchableOpacity onPress={() => {console.log(item.imageUrl)}}>
-          <Image source={{uri: item.imageUrl}} style={styles.image} />
+          <TouchableOpacity onPress={() => {setSelectedRecipe(item); setModalVisible(true);}}>
+            <Image source={{uri: item.imageUrl}} style={styles.image} />
           </TouchableOpacity>
           <TouchableOpacity style={[styles.voteBtn, styles.upvoteBtn]} onPress={() => handleUpvote(item.id)}>
             <Icon name="arrow-up" size={30} color={userData.votes[item.id] === 'up' ? "green" : "black"} />
@@ -149,6 +153,45 @@ const handleDownvote = async (id) => {
             <Icon name="arrow-down" size={30} color={userData.votes[item.id] === 'down' ? "red" : "black"} />
           </TouchableOpacity>
           <Text style={styles.recipeName}>{item.name}</Text>
+          <Text style={styles.votesCount}>{item.votes}</Text>
+          
+          
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>Ingredients:</Text>
+              {selectedRecipe?.ingredients.names.map((name, index) => (
+                <Text key={index} style={styles.modalText}>
+                  {name}, Amount: {selectedRecipe.ingredients.amounts[index]}, Type: {selectedRecipe.ingredients.types[index]}
+                </Text>
+              ))}
+              <Text style={styles.modalText}>
+                Steps:
+                {selectedRecipe?.steps.map((step, index) => (
+                  <View key={index} style={{ marginBottom: 10 }}>
+                    <Text>
+                      {index + 1}. {step}
+                    </Text>
+                  </View>
+                ))}
+              </Text>
+
+              <TouchableOpacity
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <Text style={styles.textStyle}>Hide Recipe</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
           </View>)}
         keyExtractor={(item, index) => index.toString()} />
       <BottomNavigationBar/>
@@ -164,6 +207,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff', // Background color of the app.,
     color: '#3ac78b',
     alignItems: 'center'
+  },
+
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: 'rgba(0,0,0,0.5)', // semi-transparent background
+  },
+
+  modalView: {
+    margin: 20,
+    backgroundColor: "white", // white background for the modal content
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
   },
 
   top:{
@@ -205,6 +271,10 @@ const styles = StyleSheet.create({
 
   recipeName:{
     fontSize: 25
+  },
+
+  votesCount:{
+    fontsize: 15,
   },
 
   itemContainer:{
