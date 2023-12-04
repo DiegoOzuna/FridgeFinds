@@ -2,7 +2,11 @@ import React, { Component } from "react";
 import { StyleSheet, Text, View, FlatList } from "react-native"; 
 import { ListItem, SearchBar } from "react-native-elements"; 
 import BottomNavigationBar from '../components/BottomNavigatorBar';
+
+import { Dimensions } from "react-native";
 //import filter from "lodash.filter";
+
+const windowHeight = Dimensions.get('window').height;
 
 const DATA = [ 
 { 
@@ -82,19 +86,21 @@ render() {
 	return ( 
 	<View style={styles.container}> 
 		<SearchBar 
-		placeholder="Search Here..."
-		lightTheme 
-		round 
-		value={this.state.searchValue} 
-		onChangeText={(text) => this.searchFunction(text)} 
-		autoCorrect={false} 
+			placeholder="Search Here..."
+			lightTheme 
+			round 
+			value={this.state.searchValue} 
+			onChangeText={(text) => this.searchFunction(text)} 
+			autoCorrect={false} 
 		/> 
 		<FlatList 
-		data={this.state.data} 
-		renderItem={renderItem} 
-		keyExtractor={(item) => item.id} 
-		/> 
-        <BottomNavigationBar/>
+			data={this.state.data} 
+			renderItem={renderItem} 
+			keyExtractor={(item) => item.id}
+			style={{height: windowHeight - 100}}
+			contentContainerStyle={{paddingBottom: 44}}
+		/>  
+		<BottomNavigationBar/>
 	</View> 
 	); 
 } 
@@ -104,11 +110,9 @@ export default Search;
 
 const styles = StyleSheet.create({ 
 container: { 
-	marginTop: 30, 
-	padding: 2, 
-    direction:'inherit',
-    backgroundColor: '#fff', // Background color of the app.,
-    color: '#3ac78b'
+	backgroundColor: '#fff',
+	color: '#3ac78b',
+	flex: 1,
 }, 
 item: { 
 	backgroundColor: '#fff', 

@@ -122,15 +122,16 @@ const handleDownvote = async (id) => {
     <View style={styles.container}>
       <View style = {styles.top}>
       <StatusBar style='auto'/>
-      <TextInput
-        style={styles.input}
-        placeholder='Add item to list'
-        value={inputValue}
-        onChangeText={text => setInputValue(text)} />
-      <TouchableOpacity
-      style = {styles.addBtn}
-      onPress={addItem}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder='Add item to list'
+          value={inputValue}
+          onChangeText={text => setInputValue(text)} />
+        <TouchableOpacity
+          style = {styles.addBtn}
+          onPress={addItem}>
+          <Text style={[styles.addButtonText, {marginLeft: -1}]}> + </Text>
+        </TouchableOpacity>
       </View>
       <FlatList
         style = {styles.listContainer}
@@ -172,12 +173,20 @@ const styles = StyleSheet.create({
   //display of our add button
   addBtn: {
     backgroundColor: '#8addb9',
-    borderRadius:25,
+    borderRadius: 15,
     width:50,
     height:50,
     marginTop: 30,
     marginBottom: 10,
     marginLeft: 10,
+  },
+  
+  addButtonText: {
+    color: '#fff',
+    fontSize: 50,
+    lineHeight: 54,
+    paddingRight: 1,
+    textAlignVertical: 'center',
   },
 
   rmvBtn: {

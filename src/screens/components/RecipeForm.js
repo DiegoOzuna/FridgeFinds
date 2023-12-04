@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { KeyboardAvoidingView, Image, ScrollView, View, TextInput, Button, StyleSheet, Text } from 'react-native';
+import { KeyboardAvoidingView, Image, ScrollView, View, TextInput, Button, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';  // Import the Dropdown component
 import * as ImagePicker from 'expo-image-picker'; //will allow user to choose a photo for recipe
 import { FIREBASE_STORAGE } from '../../firebase'
@@ -7,6 +7,7 @@ import { FIRESTORE_DB } from '../../firebase';
 import { ref, uploadBytes, deleteObject, getDownloadURL} from "firebase/storage";
 import { useNavigation } from '@react-navigation/core';
 import { collection, addDoc } from "firebase/firestore";
+import DashedButton from './DashedButton';
 
 const RecipeForm = () => {
   const navigation = useNavigation();
@@ -15,6 +16,7 @@ const RecipeForm = () => {
   const [steps, setSteps] = useState([{ step: '', number: 1 }]);  // Add a new state for steps
   const [image, setImage] = useState(null);  // Add a new state for the image URI
   const [imageRef, setImageRef] = useState(null);  // Add a new state for the image reference
+
 
   // Define the options for the dropdown menu
   const typeOptions = [
@@ -47,7 +49,6 @@ const RecipeForm = () => {
       }
     })();
   }, []);
-
 
   const ihandleChange = (value, name, index) => { //Making sure user input is being captured
     const updatedIngredients = [...ingredient];
@@ -182,39 +183,52 @@ const RecipeForm = () => {
   >
     <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.title}> Add Your Recipe :) </Text>
-        <Button style={styles.button} title="Cancel Form" onPress={handleExit} />
-        <TextInput
-        style={styles.descBox}
-        placeholder="Recipe Name"
-        onChangeText={setRecipeName}
-        />
+
+        {/* Cancel Button */}
+        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={handleExit}>
+          <Text style={styles.cancelText}> CANCEL </Text>
+        </TouchableOpacity>
+
+        {/* Recipe Name Box */}
+        <TextInput style={styles.recipeInput} placeholder="Recipe Name" onChangeText={setRecipeName}/>
+        
+        <Text style={styles.sectionText}>Ingredients</Text>
+
         {ingredient.map((input, index) => (
           <View style={styles.listContainer} key={index}>
             <View style={styles.ingredientCell}>
-              <TextInput style={styles.descBox}
-                name="item"
-                placeholder="Ingredient"
-                onChangeText={(value) => ihandleChange(value, 'item', index)}
-              />
-              <TextInput style={styles.descBox}
+
+              <TextInput style={styles.amountInput}
                 name="amount"
                 placeholder="Amount"
                 onChangeText={(value) => ihandleChange(value, 'amount', index)}
               />
+
               <Dropdown
                 style={styles.type}
                 data={typeOptions}
                 labelField="label"
                 valueField="value"
-                placeholder="Select an item"
+                placeholder="Unit"
                 value={input.type}  // Use the type property of the current input as the value prop
                 onChange={(item) => ihandleChange(item.value, 'type', index)}
               />
+
+              <TextInput style={styles.descBox}
+                name="item"
+                placeholder="Ingredient"
+                onChangeText={(value) => ihandleChange(value, 'item', index)}
+              />
+              
             </View>
           </View>
         ))}
-        <Button style={styles.button} title="Add Ingredient" onPress={ihandleAdd} />
+        {/* Add Ingredient Button */}
+        <TouchableOpacity style={[styles.button, styles.addButton]} onPress={ihandleAdd}>
+          <Text style={styles.addButtonText}> Add Ingredient </Text>
+        </TouchableOpacity>
+
+        <Text style={styles.sectionText}>Instructions</Text>
 
         {steps.map((input, index) => (  // New map function for steps
           <View style={styles.listContainer} key={index}>
@@ -229,10 +243,23 @@ const RecipeForm = () => {
             />
           </View></View>
         ))}
-        <Button style={styles.button} title="Add Step" onPress={shandleAdd} />
+
+        {/* Add Step Button */}
+        <TouchableOpacity style={[styles.button, styles.addButton]} onPress={shandleAdd}>
+          <Text style={styles.addButtonText}> Add Step </Text>
+        </TouchableOpacity>
+
         {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}  
-        <Button style={styles.button} title="Upload Image" onPress={handleImageUpload} />
-        <Button style={styles.button} title="Submit" onPress={handleSubmit} />
+        
+        {/* Upload Image Button */}
+        <DashedButton onPress = {handleImageUpload} text="Upload Image"/>
+        
+
+        {/* Submit Button */}
+        <TouchableOpacity style={[styles.button, styles.submitButton]} onPress={handleSubmit}>
+          <Text style={styles.addButtonText}> SUBMIT </Text>
+        </TouchableOpacity>
+
       </View>
     </ScrollView>   
   </KeyboardAvoidingView>
@@ -245,7 +272,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     color: '#3ac78b',
     alignItems: 'center',
-    paddingTop: '10%'
+    paddingTop: '10%',
+    position: 'relative'
   },
 
   listContainer: {
@@ -276,7 +304,9 @@ const styles = StyleSheet.create({
 
   type: {
     flex: 1,  // Use flex to adjust the width
-    height: 30,  // Adjust the height
+    height: 20,  // Adjust the height
+    marginHorizontal: 8,
+    width: 'auto',
   },
 
   title:{
@@ -285,8 +315,93 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    marginTop: 20,  // Add top margin to the buttons
+    marginTop: 5,  // Add top margin to the buttons
   },
+
+
+  // K's Styles (Can be changed to whatever preference)
+
+
+  // Cancel Button
+  cancelButton: {
+    backgroundColor: 'red',
+    position: 'absolute',
+    top: 1,
+    left: 5,
+    paddingHorizontal: 5,
+    paddingVertical: 5,
+    borderRadius: 5,
+  },
+  cancelText: {
+    color: '#fff',
+    fontSize: 18,
+  },
+
+  // Recipe Name Input
+  recipeInput: {
+    width: '100%',
+    fontSize: 40,
+    fontWeight: 'bold',
+    textAlign: 'left',
+    paddingTop: 20,
+    paddingLeft: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#D4D4D4',
+    paddingBottom: 12,
+  },
+
+  // Amount Input
+  amountInput: {
+    width: 70,
+    fontSize: 16,
+    borderBottomColor: 'grey',
+    borderBottomWidth: 1,
+    marginRight: 10,
+    textAlign: 'center',
+    height: 20,
+  },
+
+  // Add Button
+  addButton: {
+    backgroundColor: '#3ac78b',
+    paddingHorizontal: 20,
+    paddingVertical: 3,
+    borderRadius: 5,
+    marginTop: 5,
+    marginBottom: 5,
+    width: '90%',
+    alignItems: 'center',
+  },
+  addButtonText: {
+    color: '#fff',
+    fontSize: 20,
+  },
+
+  // Submit Button
+  submitButton: {
+    backgroundColor: '#3ac78b',
+    position: 'absolute',
+    top: 1,
+    right: 5,
+    paddingHorizontal: 5,
+    paddingVertical: 5,
+    borderRadius: 5,
+  },
+  submitText: {
+    color: '#fff',
+    fontSize: 18,
+  },
+
+  // Section Text
+  sectionText: {
+    width: '100%',
+    fontSize: 30,
+    color: '#3ac78b',
+    textAlign: 'left',
+    paddingTop: 20,
+    paddingLeft: 20,
+    paddingBottom: 10,
+  }, 
 });  
 
 export default RecipeForm;
