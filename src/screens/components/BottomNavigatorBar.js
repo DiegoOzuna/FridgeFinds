@@ -2,11 +2,9 @@
 
 import { useNavigation } from '@react-navigation/core'; //added to have other pages be navigated to.
 
-import React, {useState} from 'react';
-import { View, Text, Pressable, StatusBar } from 'react-native';
-
-// For the Bottom Navigation Bar, it is the icons.
-import Icon from 'react-native-ico-material-design';
+import React from 'react';
+import { View, Text, Pressable, StatusBar} from 'react-native';
+import AppIcon from './AppIcons';
 
 
 const BottomNavigationBar = (props) => {
@@ -34,20 +32,20 @@ const BottomNavigationBar = (props) => {
 
             {/*Fridge Button (Left)*/}
             <Pressable onPress={() => navigation.navigate('UserPage')} style={styles.IconBehave}
-            android_ripple={{borderless:true, radius:50}}>
-              <Icon name="shopping-cart" height={iconHeight} width={iconWidth} color='black'/>
+            android_ripple={{borderless:true, radius:20}}>
+              <AppIcon name="FridgeFindsFridge" height={iconHeight} width={iconWidth} style={styles.IconBehave}/>
             </Pressable>
 
             {/*Notebook Button (Middle)*/}
             <Pressable onPress={() => navigation.navigate('RecipePage')} style={styles.IconBehave}
-            android_ripple={{borderless:true, radius:50}}>
-              <Icon name="show-menu-button" height={iconHeight} width={iconWidth} color='black'/>
+            android_ripple={{borderless:true, radius:20}}>
+              <AppIcon name="FridgeFindsNotebook" height={iconHeight} width={iconWidth} style={styles.IconBehave}/>
             </Pressable>
 
             {/*Chef Hat Button (Right)*/}
             <Pressable onPress={() => navigation.navigate('ShopListPage')} style={styles.IconBehave}
-            android_ripple={{borderless:true, radius:50}}>
-              <Icon name="user-account-box" height={iconHeight} width={iconWidth} color='black'/>
+            android_ripple={{borderless:true, radius:20}}>
+              <AppIcon name="FridgeFindsChefHat" height={iconHeight} width={iconWidth} style={styles.IconBehave}/>
             </Pressable>
 
           </View>
@@ -62,21 +60,22 @@ const styles = {
       flex: 1,
       backgroundColor: '#fff', // Background color of the app.,
       color: '#3ac78b',
-      alignItems: 'center'
+      alignItems: 'center',
+      justifyContent: 'flex-end',
     },
   
+    // ~~~~~ Bottom Navigation Bar Variables ~~~~~ //
     NavText: {
       position: 'absolute',
       top: -35,
       left: -230,
       padding: 50,
     },
-  
-    // ~~~~~ Bottom Navigation Bar Variables ~~~~~ //
+    
     NavContainer: {
       position: 'absolute', // We absolultely want it at the bottom of the screen.
       alignItems: 'center', // Center of screen.
-      bottom: 20 // Bottom Margin.
+      bottom: 5, // Bottom Margin.
     },
   
     NavBar: {
