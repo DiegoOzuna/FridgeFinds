@@ -30,6 +30,7 @@ const RecipePage = () =>  {
 
 
   const [inputValue, setInputValue] = useState('');
+  const [filteredRecipes, setFilteredRecipes] = useState([]); //state to hold recipes filtered by user
   const [recipes, setRecipes] = useState([]); // state to hold recipes
   const navigation = useNavigation();  //const points to navigate stack
 
@@ -42,6 +43,7 @@ const RecipePage = () =>  {
     const fetchData = async () => {
     const querySnapshot = await getDocs(collection(FIRESTORE_DB, 'Recipes'));
     setRecipes(querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+    setFilteredRecipes(recipes); // This is to initialize our filtered list without accidentally messing original data.
   }
   fetchData();
 }, []);
@@ -128,9 +130,17 @@ const handleDownvote = async (id) => {
       <StatusBar style='auto'/>
         <TextInput
           style={styles.input}
-          placeholder='Add item to list'
+          placeholder='Search for a Recipe'
           value={inputValue}
-          onChangeText={text => setInputValue(text)} />
+          onChangeText={text => {
+            setInputValue(text);
+            if (text) {
+              setFilteredRecipes(recipes.filter(recipe => recipe.name.toLowerCase().includes(text.toLowerCase())));
+            } else {
+              setFilteredRecipes(recipes);
+            }
+          }}
+        />
         <TouchableOpacity
           style = {styles.addBtn}
           onPress={addItem}>
@@ -140,7 +150,7 @@ const handleDownvote = async (id) => {
       <FlatList
         style = {styles.listContainer}
         itemStyle = {styles.listItems}
-        data={recipes.sort((a, b) => b.votes - a.votes)} // sort by votes
+        data={filteredRecipes.sort((a, b) => b.votes - a.votes)} // sort by votes
         renderItem={({item}) => (
         <View style = {styles.itemContainer}>
           <TouchableOpacity onPress={() => {setSelectedRecipe(item); setModalVisible(true);}}>
@@ -193,7 +203,9 @@ const handleDownvote = async (id) => {
           </View>
         </Modal>
           </View>)}
-        keyExtractor={(item, index) => index.toString()} />
+        keyExtractor={(item, index) => index.toString()} 
+        ListEmptyComponent={<Text style={styles.notif}>No recipes found. Please consider adding an entry for this recipe :)</Text>}
+        />
       <BottomNavigationBar/>
     </View>
     
@@ -214,6 +226,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: 'rgba(0,0,0,0.5)', // semi-transparent background
+  },
+
+  notif:{
+    fontSize:20,
+    justifyContent: "center",
   },
 
   modalView: {
@@ -270,11 +287,11 @@ const styles = StyleSheet.create({
   },
 
   recipeName:{
-    fontSize: 25
+    fontSize: 25,
   },
 
   votesCount:{
-    fontsize: 15,
+    fontSize: 10
   },
 
   itemContainer:{
