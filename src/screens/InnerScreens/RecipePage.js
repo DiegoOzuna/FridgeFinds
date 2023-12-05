@@ -180,7 +180,8 @@ const handleFavorite = async (id) => {
 
   return(
     <View style={styles.container}>
-      <View style = {styles.top}>
+      <Text style={[styles.screenText, {alignSelf: 'flex-start'}]}>Recipes</Text>
+      <View style = {[styles.top, {marginTop: -30}]}>
         <StatusBar style='auto'/>
         <TextInput
           style={styles.input}
@@ -334,8 +335,16 @@ const styles = StyleSheet.create({
   },
 
   top:{
-    paddingTop:'5%',
+    paddingTop:'1%',
     flexDirection:'row',
+  },
+
+// Screen Title ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  screenText: {
+    fontSize: 50,
+    color: '#34785a',
+    fontWeight: '900',
+    marginLeft: '2%',
   },
 
 // Add Btn ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -403,7 +412,6 @@ const styles = StyleSheet.create({
 
   textContainer: {
     flexShrink: 1,
-    //flex: 1,
     flexBasis: '50%',
   },
 

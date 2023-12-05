@@ -257,7 +257,7 @@ const RecipeForm = () => {
 
         {/* Submit Button */}
         <TouchableOpacity style={[styles.button, styles.submitButton]} onPress={handleSubmit}>
-          <Text style={styles.addButtonText}> SUBMIT </Text>
+          <Text style={styles.submitText}> SUBMIT </Text>
         </TouchableOpacity>
 
       </View>
@@ -282,9 +282,11 @@ const styles = StyleSheet.create({
 
   ingredientCell:{
     flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 10,
     padding: 10,
-    marginVertical: 15,
+    marginVertical: 10,
+    width: '95%'
   },
 
   stepsCell:{
@@ -322,10 +324,12 @@ const styles = StyleSheet.create({
   cancelButton: {
     backgroundColor: 'red',
     position: 'absolute',
-    top: 1,
-    left: 5,
-    paddingHorizontal: 5,
-    paddingVertical: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: '1%',
+    left: '2%',
+    paddingHorizontal: '3%',
+    paddingVertical: '2%',
     borderRadius: 5,
   },
   cancelText: {
@@ -365,7 +369,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 5,
     marginBottom: 5,
-    width: '90%',
+    width: '50%',
     alignItems: 'center',
   },
   addButtonText: {
@@ -377,10 +381,12 @@ const styles = StyleSheet.create({
   submitButton: {
     backgroundColor: '#3ac78b',
     position: 'absolute',
-    top: 1,
-    right: 5,
-    paddingHorizontal: 5,
-    paddingVertical: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: '1%',
+    right: '2%',
+    paddingHorizontal: '3%',
+    paddingVertical: '2%',
     borderRadius: 5,
   },
   submitText: {
@@ -392,11 +398,12 @@ const styles = StyleSheet.create({
   sectionText: {
     width: '100%',
     fontSize: 30,
+    fontWeight: 'bold',
     color: '#3ac78b',
     textAlign: 'left',
     paddingTop: 20,
     paddingLeft: 20,
-    paddingBottom: 10,
+    paddingBottom: 5,
   }, 
 });  
 

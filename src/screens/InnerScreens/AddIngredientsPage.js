@@ -124,8 +124,10 @@ const styles = StyleSheet.create({
   },
   title: {
     marginBottom: 20,
-    fontSize: 25,
-    textAlign: 'center'
+    fontSize: 30,
+    textAlign: 'center',
+    color: '#34785a',
+    fontWeight: '900',
   },
   itemInput: {
     height: 50,

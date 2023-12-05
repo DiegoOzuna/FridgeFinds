@@ -63,22 +63,23 @@ const UserPage = () => {
   
   return (
     <View style={styles.container}>
+      <Text style={[styles.screenText, {alignSelf: 'flex-start'}]}>myFridge</Text>
+      <TouchableOpacity
+        style = {[styles.button, styles.signOutBtn]}
+        onPress={handleSignOut}>
+        <Text style = {[styles.displayText, styles.signoutTxt]}>Sign Out</Text>
+      </TouchableOpacity>
       <StatusBar style='auto'/>
       <View style={styles.topLeftContainer}>
         <TouchableOpacity
         style = {styles.button}
-        onPress={handleSignOut}>
-        <Text style = {styles.displayText}>Sign Out </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-        style = {styles.button}
         onPress={handleSearch}>
-       <Text style = {styles.displayText}>Search</Text>
+          <Text style = {styles.displayText}>Search</Text>
         </TouchableOpacity>
         <TouchableOpacity
-        style = {styles.button}
+        style = {[styles.button, {marginLeft: '5%'}]}
         onPress={handleSubmit}>
-        <Text style = {styles.displayText}>Add Ingredient</Text>
+          <Text style = {styles.displayText}>Add Ingredient</Text>
         </TouchableOpacity>
       </View>
       <BottomNavigationBar/>
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     direction:'inherit',
     flexWrap:'nowrap',
-   marginTop:40,
+    marginTop:10,
   //  marginRight:100,
   },
 
@@ -123,11 +124,11 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#62d2a2',
-    width: '30%',
+    width: '45%',
     padding: 5,
-    borderRadius: 20,
+    borderRadius: 10,
     justifyContent: 'flex-start',
-    alignItems: 'center'
+    alignItems: 'center',
 
   },
   buttonText: {
@@ -141,6 +142,33 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16
 
+  },
+
+// Screen Title ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  screenText: {
+    fontSize: 50,
+    color: '#34785a',
+    fontWeight: '900',
+    marginLeft: '2%',
+  },
+
+// Signout Button
+  signOutBtn: {
+    backgroundColor: '#dcdedd',
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: '3%',
+    right: '4%',
+    paddingHorizontal: '1%',
+    paddingVertical: '2%',
+    borderRadius: 10,
+    width: '30%'
+  },
+
+  signoutTxt: {
+    backgroundColor: '#dcdedd',
+    color: '#fff',
   },
 });
 

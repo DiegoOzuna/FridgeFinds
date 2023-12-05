@@ -83,9 +83,10 @@ const ShopList = () =>  {
           value={inputValue}
           onChangeText={text => setInputValue(text)} />
         <TouchableOpacity
-        style = {styles.addBtn}
-        onPress={addItem}
-        />
+          style = {styles.addBtn}
+          onPress={addItem}>
+          <Text style={[styles.addButtonText, {marginLeft: -1}]}> + </Text>
+        </TouchableOpacity>
         </View>
         <FlatList
           style = {styles.listContainer}
@@ -159,6 +160,25 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 10,
     padding: 10,
+  },
+
+// Add Btn ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  addBtn: {
+    backgroundColor: '#8addb9',
+    borderRadius: 15,
+    width:50,
+    height:50,
+    marginTop: 30,
+    marginBottom: 10,
+    marginLeft: 10,
+  },
+
+  addButtonText: {
+    color: '#fff',
+    fontSize: 50,
+    lineHeight: 54,
+    paddingRight: 1,
+    textAlignVertical: 'center',
   },
 
 });
