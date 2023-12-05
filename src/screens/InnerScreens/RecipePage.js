@@ -14,6 +14,7 @@ const RecipePage = () =>  {
 
   const [modalVisible, setModalVisible] = useState(false); // state to control the visibility of the modal
   const [selectedRecipe, setSelectedRecipe] = useState(null); // state to hold the selected recipe
+  const [showFavorites, setShowFavorites] = useState(false); //used so that user can toggle when they want to only view their favorites and search through them.
 
   const [userData, setUserData] = useState({}); // state to hold user data
 
@@ -29,6 +30,18 @@ const RecipePage = () =>  {
   }, []);
 
 
+  useEffect(() => {
+    let newFilteredRecipes = recipes;
+    if (inputValue) {
+      newFilteredRecipes = newFilteredRecipes.filter(recipe => recipe.name.toLowerCase().includes(inputValue.toLowerCase()));
+    }
+    if (showFavorites) {
+      newFilteredRecipes = newFilteredRecipes.filter(recipe => userData.favorites.includes(recipe.id));
+    }
+    setFilteredRecipes(newFilteredRecipes);
+  }, [showFavorites, recipes]);
+  
+
   const [inputValue, setInputValue] = useState('');
   const [filteredRecipes, setFilteredRecipes] = useState([]); //state to hold recipes filtered by user
   const [recipes, setRecipes] = useState([]); // state to hold recipes
@@ -41,10 +54,11 @@ const RecipePage = () =>  {
   // Fetch recipes from Firestore
   useEffect(() => {
     const fetchData = async () => {
-    const querySnapshot = await getDocs(collection(FIRESTORE_DB, 'Recipes'));
-    setRecipes(querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })));
-    setFilteredRecipes(recipes); // This is to initialize our filtered list without accidentally messing original data.
-  }
+      const querySnapshot = await getDocs(collection(FIRESTORE_DB, 'Recipes'));
+      const fetchedRecipes = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+      setRecipes(fetchedRecipes);
+      setFilteredRecipes(fetchedRecipes); // used to initialize our filter list to include all
+    }
   fetchData();
 }, []);
 
@@ -55,7 +69,6 @@ const handleUpvote = async (id) => {
   // Fetch the latest user data from Firestore
   const userDoc = await getDoc(doc(database, "users", uid));
   let userData = userDoc.data();
-
 
   const recipeDoc = await getDoc(recipeRef);
   const recipeData = recipeDoc.data();
@@ -69,6 +82,7 @@ const handleUpvote = async (id) => {
 
     userData.votes[id] = 'up';
     await updateDoc(doc(database, "users", uid), { votes: userData.votes });
+    setUserData({...userData}); // update local.
   } else if (!userData.votes[id]) {
     // The user hasn't voted for this recipe yet
     // Increment the recipe's votes by 1 and set the user's vote to 'up'
@@ -78,9 +92,18 @@ const handleUpvote = async (id) => {
 
     userData.votes[id] = 'up';
     await updateDoc(doc(database, "users", uid), { votes: userData.votes });
-    fetchUserData();
+    setUserData({...userData}); //update local
   }
+
+  // Fetch the updated recipe data
+  const updatedRecipeDoc = await getDoc(recipeRef);
+  const updatedRecipeData = updatedRecipeDoc.data();
+
+  // Update the recipes and filteredRecipes state
+  setRecipes(prevRecipes => prevRecipes.map(recipe => recipe.id === id ? {...recipe, votes: updatedRecipeData.votes} : recipe));
+  setFilteredRecipes(prevFilteredRecipes => prevFilteredRecipes.map(recipe => recipe.id === id ? {...recipe, votes: updatedRecipeData.votes} : recipe));
 }
+
 
 // Function to handle downvote
 const handleDownvote = async (id) => {
@@ -89,11 +112,6 @@ const handleDownvote = async (id) => {
   // Fetch the latest user data from Firestore
   const userDoc = await getDoc(doc(database, "users", uid));
   let userData = userDoc.data();
-
-  // Initialize votes as an empty object if it doesn't exist
-  if (!userData.votes) {
-    userData.votes = {};
-  }
 
   const recipeDoc = await getDoc(recipeRef);
   const recipeData = recipeDoc.data();
@@ -107,6 +125,7 @@ const handleDownvote = async (id) => {
 
     userData.votes[id] = 'down';
     await updateDoc(doc(database, "users", uid), { votes: userData.votes });
+    setUserData({...userData}); //update local
   } else if (!userData.votes[id]) {
     // The user hasn't voted for this recipe yet
     // Decrement the recipe's votes by 1 and set the user's vote to 'down'
@@ -116,9 +135,44 @@ const handleDownvote = async (id) => {
 
     userData.votes[id] = 'down';
     await updateDoc(doc(database, "users", uid), { votes: userData.votes });
-    fetchUserData();
+    setUserData({...userData}); //update local
   }
+
+  // Fetch the updated recipe data
+  const updatedRecipeDoc = await getDoc(recipeRef);
+  const updatedRecipeData = updatedRecipeDoc.data();
+
+  // Update the recipes and filteredRecipes state
+  setRecipes(prevRecipes => prevRecipes.map(recipe => recipe.id === id ? {...recipe, votes: updatedRecipeData.votes} : recipe));
+  setFilteredRecipes(prevFilteredRecipes => prevFilteredRecipes.map(recipe => recipe.id === id ? {...recipe, votes: updatedRecipeData.votes} : recipe));
 }
+
+
+
+
+
+const handleFavorite = async (id) => {
+  const userRef = doc(database, "users", uid);
+
+  // Fetch the latest user data from Firestore
+  const userDoc = await getDoc(userRef);
+  let userData = userDoc.data();
+
+  if (userData.favorites.includes(id)) {
+    // The user has already favorited this recipe
+    // Remove the recipe from the favorites list
+    userData.favorites = userData.favorites.filter(recipeId => recipeId !== id);
+  } else {
+    // The user hasn't favorited this recipe yet
+    // Add the recipe to the favorites list
+    userData.favorites.push(id);
+  }
+
+  // Update the user's favorites list in Firestore
+  await updateDoc(userRef, { favorites: userData.favorites });
+  setUserData({...userData});
+}
+
 
 
 
@@ -147,23 +201,33 @@ const handleDownvote = async (id) => {
           <Text style={[styles.addButtonText, {marginLeft: -1}]}> + </Text>
         </TouchableOpacity>
       </View>
+      <TouchableOpacity onPress={() => setShowFavorites(!showFavorites)}>
+        <Text style={styles.addBtn}>{showFavorites ? "Show All" : "Show Favorites Only"}</Text>
+      </TouchableOpacity>
+
       <FlatList
         style = {styles.listContainer}
         itemStyle = {styles.listItems}
         data={filteredRecipes.sort((a, b) => b.votes - a.votes)} // sort by votes
         renderItem={({item}) => (
         <View style = {styles.itemContainer}>
-          <TouchableOpacity onPress={() => {setSelectedRecipe(item); setModalVisible(true);}}>
-            <Image source={{uri: item.imageUrl}} style={styles.image} />
-          </TouchableOpacity>
+          <View style = {styles.voteContainer}>
           <TouchableOpacity style={[styles.voteBtn, styles.upvoteBtn]} onPress={() => handleUpvote(item.id)}>
             <Icon name="arrow-up" size={30} color={userData.votes[item.id] === 'up' ? "green" : "black"} />
           </TouchableOpacity>
           <TouchableOpacity style={[styles.voteBtn, styles.downvoteBtn]} onPress={() => handleDownvote(item.id)}>
             <Icon name="arrow-down" size={30} color={userData.votes[item.id] === 'down' ? "red" : "black"} />
           </TouchableOpacity>
+          </View>
+          <TouchableOpacity onPress={() => {setSelectedRecipe(item); setModalVisible(true);}}>
+            <Image source={{uri: item.imageUrl}} style={styles.image} />
+          </TouchableOpacity>
           <Text style={styles.recipeName}>{item.name}</Text>
           <Text style={styles.votesCount}>{item.votes}</Text>
+          <TouchableOpacity onPress={() => handleFavorite(item.id)}>
+            <Icon name="heart" size={30} color={userData.favorites.includes(item.id) ? "red" : "gray"} />
+          </TouchableOpacity>
+
           
           
           <Modal
@@ -296,6 +360,10 @@ const styles = StyleSheet.create({
 
   itemContainer:{
     flexDirection:'row',
+  },
+  
+  voteContainer:{
+    flexDirection:'column'
   },
 
   listItems:{
