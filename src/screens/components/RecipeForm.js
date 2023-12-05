@@ -318,10 +318,6 @@ const styles = StyleSheet.create({
     marginTop: 5,  // Add top margin to the buttons
   },
 
-
-  // K's Styles (Can be changed to whatever preference)
-
-
   // Cancel Button
   cancelButton: {
     backgroundColor: 'red',
