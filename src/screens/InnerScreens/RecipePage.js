@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Modal, StatusBar, TouchableOpacity, Image, StyleSheet, View, Text, TextInput, FlatList } from 'react-native';
+import { Modal, StatusBar, TouchableOpacity, Image, StyleSheet, View, Text, TextInput, FlatList, ScrollView, VirtualizedList } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { FIRESTORE_DB, FIREBASE_AUTH }  from '../../firebase'; // import FIRESTORE_DB
 import BottomNavigationBar from '../components/BottomNavigatorBar';
@@ -180,8 +180,9 @@ const handleFavorite = async (id) => {
 
   return(
     <View style={styles.container}>
-      <View style = {styles.top}>
-      <StatusBar style='auto'/>
+      <Text style={[styles.screenText, {alignSelf: 'flex-start'}]}>Recipes</Text>
+      <View style = {[styles.top, {marginTop: -35}]}>
+        <StatusBar style='auto'/>
         <TextInput
           style={styles.input}
           placeholder='Search for a Recipe'
@@ -201,32 +202,50 @@ const handleFavorite = async (id) => {
           <Text style={[styles.addButtonText, {marginLeft: -1}]}> + </Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={() => setShowFavorites(!showFavorites)}>
-        <Text style={styles.addBtn}>{showFavorites ? "Show All" : "Show Favorites Only"}</Text>
+
+      <TouchableOpacity 
+        style = {styles.showFavoritesButton} 
+        onPress={() => setShowFavorites(!showFavorites)}>
+        <Text style={styles.showFavoritesButtonTxt}>{showFavorites ? "Show All" : "Show Favorites Only"}</Text>
       </TouchableOpacity>
 
-      <FlatList
-        style = {styles.listContainer}
+    <VirtualizedList
+      
+        style = {[styles.listContainer, {marginBottom: 75}]}
         itemStyle = {styles.listItems}
         data={filteredRecipes.sort((a, b) => b.votes - a.votes)} // sort by votes
         renderItem={({item}) => (
         <View style = {styles.itemContainer}>
+
+          {/* Upvote/Downvote Arrows */}
           <View style = {styles.voteContainer}>
-          <TouchableOpacity style={[styles.voteBtn, styles.upvoteBtn]} onPress={() => handleUpvote(item.id)}>
-            <Icon name="arrow-up" size={30} color={userData.votes[item.id] === 'up' ? "green" : "black"} />
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.voteBtn, styles.downvoteBtn]} onPress={() => handleDownvote(item.id)}>
-            <Icon name="arrow-down" size={30} color={userData.votes[item.id] === 'down' ? "red" : "black"} />
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.voteBtn} onPress={() => handleUpvote(item.id)}>
+              <Icon name="arrow-up" size={30} color={userData.votes[item.id] === 'up' ? "green" : "black"} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.voteBtn} onPress={() => handleDownvote(item.id)}>
+              <Icon name="arrow-down" size={30} color={userData.votes[item.id] === 'down' ? "red" : "black"} />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => {setSelectedRecipe(item); setModalVisible(true);}}>
-            <Image source={{uri: item.imageUrl}} style={styles.image} />
-          </TouchableOpacity>
-          <Text style={styles.recipeName}>{item.name}</Text>
-          <Text style={styles.votesCount}>{item.votes}</Text>
-          <TouchableOpacity onPress={() => handleFavorite(item.id)}>
-            <Icon name="heart" size={30} color={userData.favorites.includes(item.id) ? "red" : "gray"} />
-          </TouchableOpacity>
+          
+          {/* Recipe Name & Image */}
+          <View style = {styles.recipesContainer}>
+            <TouchableOpacity 
+              styles={styles.touchContainer}
+              onPress={() => {setSelectedRecipe(item); setModalVisible(true);}}>
+              <Image source={{uri: item.imageUrl}} style={styles.image} />
+            </TouchableOpacity>
+            <View style={styles.textContainer}>
+              <Text numberOfLines={4} ellipsizeMode="tail" style={styles.recipeName}>{item.name}</Text>
+            </View>
+          </View>
+          
+          {/* Fav Heart & Count */}
+          <View style={styles.heartIcon}>
+            <TouchableOpacity  style={styles.heartBtn} onPress={() => handleFavorite(item.id)}>
+              <Icon name="heart" size={30} color={userData.favorites.includes(item.id) ? "red" : "gray"} />
+            </TouchableOpacity>
+            <Text style={styles.votesCount}>{item.votes}</Text>
+          </View>
 
           
           
@@ -268,6 +287,8 @@ const handleFavorite = async (id) => {
         </Modal>
           </View>)}
         keyExtractor={(item, index) => index.toString()} 
+        getItemCount={() => filteredRecipes.length}
+        getItem={(data, index) => data[index]}
         ListEmptyComponent={<Text style={styles.notif}>No recipes found. Please consider adding an entry for this recipe :)</Text>}
         />
       <BottomNavigationBar/>
@@ -314,10 +335,19 @@ const styles = StyleSheet.create({
   },
 
   top:{
-    paddingTop:'5%',
+    paddingTop:'1%',
     flexDirection:'row',
   },
-  //display of our add button
+
+// Screen Title ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  screenText: {
+    fontSize: 50,
+    color: '#34785a',
+    fontWeight: '900',
+    marginLeft: '2%',
+  },
+
+// Add Btn ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   addBtn: {
     backgroundColor: '#8addb9',
     borderRadius: 15,
@@ -336,42 +366,89 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
   },
 
-  rmvBtn: {
-    backgroundColor: 'red',
-    borderRadius:25,
-    width:30,
-    height:30,
-    marginLeft: 10,
+// Show Favorites Btn ~~~~~~~~~~~~~~~~~~~~
+  showFavoritesButton: {
+    backgroundColor: '#8addb9',
+    borderRadius: 3,
+    width: '96%',
+    alignItems: 'center',
   },
 
+  showFavoritesButtonTxt: {
+    color: '#fff',
+    fontSize: 20,
+    lineHeight: 30,
+    paddingRight: 1,
+    textAlignVertical: 'center',
+  },
+
+// Flatlist Container
   listContainer: {
-    width: '95%',
-    paddingLeft: '10%',
-    paddingTop: '10%',
+    width: '100%',
+    paddingLeft: '1%',
+    paddingRight: '1%',
+    paddingTop: '5%',
+  },
+
+  itemContainer:{
+    flexDirection:'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: '2%',
+  },
+
+// Recipe Name 
+  recipesContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+    paddingHorizontal: 3,
+  },
+
+  touchContainer: {
+    marginRight: 10
+  },
+
+  textContainer: {
+    flexShrink: 1,
+    flexBasis: '50%',
   },
 
   recipeName:{
     fontSize: 25,
+    textAlign: 'left',
+    marginHorizontal: 5,
+    maxWidth: '70%',
+  },
+
+// Upvote/Downvote Arrow ~~~~~~~~~~~~~~~~~~~~~~~~~~  
+  voteContainer:{
+    flexDirection:'column',
+    justifyContent: 'flex-start',
+    marginLeft: '1%',
+  },
+
+  voteBtn: {
+    alignSelf: 'flex-start',
+  },
+
+// Fav Heart & Count ~~~~~~~~~~~~~~~~~~~~~~~~  
+  heartIcon: {
+    flexDirection:'column',
+    alignItems: 'center',
+    //marginLeft: 5,
+  },
+
+  heartBtn: {
+    marginBottom: 1,
   },
 
   votesCount:{
     fontSize: 10
   },
 
-  itemContainer:{
-    flexDirection:'row',
-  },
-  
-  voteContainer:{
-    flexDirection:'column'
-  },
-
-  listItems:{
-    fontWeight: 'bold',
-    paddingLeft: '10%'
-  },
-
-  // Display of input bar
+// Display of input bar
   input: {
     width: '80%',
     borderColor: 'gray',
@@ -380,12 +457,29 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 10,
   },
+
+// Recipe Image ~~~~~~~~~~~~~~~~~
   image: {
     width: 100, // specify the width
     height: 100, // specify the height
-    borderColor: 'green',
+    borderColor: 'grey',
     borderWidth: 2,
   },
+
+  // This doesn't do anything?
+  // listItems:{
+  //   fontWeight: 'bold',
+  // },
+
+  // Note: This isn't place anywhere
+    // rmvBtn: {
+    //   backgroundColor: 'red',
+    //   borderRadius:25,
+    //   width:30,
+    //   height:30,
+    //   marginLeft: 10,
+    // },
+
 });
 
 export default RecipePage
