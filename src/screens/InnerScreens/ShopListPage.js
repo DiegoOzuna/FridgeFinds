@@ -3,7 +3,7 @@
 import React, {useState, useEffect} from 'react';
 import { StatusBar, TouchableOpacity, VirtualizedList } from 'react-native';
 import { StyleSheet, View} from 'react-native';
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, TextInput, Touchable, FlatList } from 'react-native';
 import { FIRESTORE_DB } from '../../firebase';  //database in our app
 import { FIREBASE_AUTH } from '../../firebase';
@@ -119,7 +119,7 @@ const ShopList = () =>  {
   
 
     return(
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <Text style={[styles.screenText, {alignSelf: 'flex-start'}]}>Groceries</Text>
         <View style = {[styles.top, {marginTop: '-13.1%'}]}>
         <StatusBar style='auto'/>
@@ -147,7 +147,7 @@ const ShopList = () =>  {
 
 
         <BottomNavigationBar/>
-      </View>
+      </SafeAreaView>
       
     );
 }

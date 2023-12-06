@@ -3,7 +3,7 @@
 import React from 'react';
 import { StatusBar, Text, TextInput, FlatList, TouchableOpacity,Alert, VirtualizedList } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 import BottomNavigationBar from '../components/BottomNavigatorBar';
 // end of imports for bottomnavigation bar
 
@@ -62,7 +62,7 @@ const UserPage = () => {
   };
   
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* Screen Title*/}
       <Text style={[styles.screenText, {alignSelf: 'flex-start'}]}>myFridge</Text>
 
@@ -95,7 +95,7 @@ const UserPage = () => {
 
 
       <BottomNavigationBar/>
-    </View>
+    </SafeAreaView>
 
     
   );

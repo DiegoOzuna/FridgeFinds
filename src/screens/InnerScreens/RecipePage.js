@@ -5,7 +5,7 @@ import { FIRESTORE_DB, FIREBASE_AUTH }  from '../../firebase'; // import FIRESTO
 import BottomNavigationBar from '../components/BottomNavigatorBar';
 import { collection, doc, getDocs, getDoc, updateDoc, setDoc } from 'firebase/firestore';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 const RecipePage = () =>  { 
   const user = FIREBASE_AUTH.currentUser;  //this should get us our current user
   const database = FIRESTORE_DB;
@@ -179,7 +179,7 @@ const handleFavorite = async (id) => {
 
 
   return(
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={[styles.screenText, {alignSelf: 'flex-start'}]}>Recipes</Text>
       <View style = {[styles.top, {marginTop: -35}]}>
         <StatusBar style='auto'/>
@@ -292,7 +292,7 @@ const handleFavorite = async (id) => {
         ListEmptyComponent={<Text style={styles.notif}>No recipes found. Please consider adding an entry for this recipe :)</Text>}
         />
       <BottomNavigationBar/>
-    </View>
+    </SafeAreaView>
     
   );
 }
