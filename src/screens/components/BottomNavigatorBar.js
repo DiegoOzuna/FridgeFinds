@@ -1,5 +1,3 @@
-// From Katlyn
-
 import { useNavigation } from '@react-navigation/core'; //added to have other pages be navigated to.
 
 import React from 'react';
@@ -62,6 +60,9 @@ const styles = {
       color: '#3ac78b',
       alignItems: 'center',
       justifyContent: 'flex-end',
+      position: 'fixed',
+      bottom: 0,
+      width: '100%'
     },
   
     // ~~~~~ Bottom Navigation Bar Variables ~~~~~ //

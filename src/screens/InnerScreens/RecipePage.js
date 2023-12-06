@@ -217,11 +217,12 @@ const handleFavorite = async (id) => {
         renderItem={({item}) => (
         <View style = {styles.itemContainer}>
 
-          {/* Upvote/Downvote Arrows */}
+          {/* Upvote/Downvote Arrows/ votecount */}
           <View style = {styles.voteContainer}>
             <TouchableOpacity style={styles.voteBtn} onPress={() => handleUpvote(item.id)}>
               <Icon name="arrow-up" size={30} color={userData.votes[item.id] === 'up' ? "green" : "black"} />
             </TouchableOpacity>
+            <Text style={styles.votesCount}>{item.votes}</Text>
             <TouchableOpacity style={styles.voteBtn} onPress={() => handleDownvote(item.id)}>
               <Icon name="arrow-down" size={30} color={userData.votes[item.id] === 'down' ? "red" : "black"} />
             </TouchableOpacity>
@@ -239,12 +240,11 @@ const handleFavorite = async (id) => {
             </View>
           </View>
           
-          {/* Fav Heart & Count */}
+          {/* Fav Heart */}
           <View style={styles.heartIcon}>
             <TouchableOpacity  style={styles.heartBtn} onPress={() => handleFavorite(item.id)}>
               <Icon name="heart" size={30} color={userData.favorites.includes(item.id) ? "red" : "gray"} />
             </TouchableOpacity>
-            <Text style={styles.votesCount}>{item.votes}</Text>
           </View>
 
           
@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
   voteContainer:{
     flexDirection:'column',
     justifyContent: 'flex-start',
-    marginLeft: '1%',
+    marginLeft: '3%',
   },
 
   voteBtn: {
@@ -445,7 +445,8 @@ const styles = StyleSheet.create({
   },
 
   votesCount:{
-    fontSize: 10
+    fontSize: 10,
+    paddingLeft: 12
   },
 
 // Display of input bar

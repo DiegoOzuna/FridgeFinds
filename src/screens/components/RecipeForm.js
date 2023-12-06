@@ -7,6 +7,7 @@ import { FIRESTORE_DB } from '../../firebase';
 import { ref, uploadBytes, deleteObject, getDownloadURL} from "firebase/storage";
 import { useNavigation } from '@react-navigation/core';
 import { collection, addDoc } from "firebase/firestore";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import DashedButton from './DashedButton';
 
 const RecipeForm = () => {
@@ -177,92 +178,94 @@ const RecipeForm = () => {
   
 
   return (
-  <KeyboardAvoidingView 
-  style={{ flex: 1 }} 
-  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-  >
-    <ScrollView>
-      <View style={styles.container}>
+  <SafeAreaView style={{flex: 1}}>
+    <KeyboardAvoidingView 
+      style={{ flex: 1 }} 
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView>
+        <View style={styles.container}>
 
-        {/* Cancel Button */}
-        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={handleExit}>
-          <Text style={styles.cancelText}> CANCEL </Text>
-        </TouchableOpacity>
+          {/* Cancel Button */}
+          <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={handleExit}>
+            <Text style={styles.cancelText}> CANCEL </Text>
+          </TouchableOpacity>
 
-        {/* Recipe Name Box */}
-        <TextInput style={styles.recipeInput} placeholder="Recipe Name" onChangeText={setRecipeName}/>
-        
-        <Text style={styles.sectionText}>Ingredients</Text>
+          {/* Recipe Name Box */}
+          <TextInput style={styles.recipeInput} placeholder="Recipe Name" onChangeText={setRecipeName}/>
+          
+          <Text style={styles.sectionText}>Ingredients</Text>
 
-        {ingredient.map((input, index) => (
-          <View style={styles.listContainer} key={index}>
-            <View style={styles.ingredientCell}>
+          {ingredient.map((input, index) => (
+            <View style={styles.listContainer} key={index}>
+              <View style={styles.ingredientCell}>
 
-              <TextInput style={styles.amountInput}
-                name="amount"
-                placeholder="Amount"
-                onChangeText={(value) => ihandleChange(value, 'amount', index)}
-              />
+                <TextInput style={styles.amountInput}
+                  name="amount"
+                  placeholder="Amount"
+                  onChangeText={(value) => ihandleChange(value, 'amount', index)}
+                />
 
-              <Dropdown
-                style={styles.type}
-                data={typeOptions}
-                labelField="label"
-                valueField="value"
-                placeholder="Unit"
-                value={input.type}  // Use the type property of the current input as the value prop
-                onChange={(item) => ihandleChange(item.value, 'type', index)}
-              />
+                <Dropdown
+                  style={styles.type}
+                  data={typeOptions}
+                  labelField="label"
+                  valueField="value"
+                  placeholder="Unit"
+                  value={input.type}  // Use the type property of the current input as the value prop
+                  onChange={(item) => ihandleChange(item.value, 'type', index)}
+                />
 
-              <TextInput style={styles.descBox}
-                name="item"
-                placeholder="Ingredient"
-                onChangeText={(value) => ihandleChange(value, 'item', index)}
-              />
-              
+                <TextInput style={styles.descBox}
+                  name="item"
+                  placeholder="Ingredient"
+                  onChangeText={(value) => ihandleChange(value, 'item', index)}
+                />
+                
+              </View>
             </View>
-          </View>
-        ))}
-        {/* Add Ingredient Button */}
-        <TouchableOpacity style={[styles.button, styles.addButton]} onPress={ihandleAdd}>
-          <Text style={styles.addButtonText}> Add Ingredient </Text>
-        </TouchableOpacity>
+          ))}
+          {/* Add Ingredient Button */}
+          <TouchableOpacity style={[styles.button, styles.addButton]} onPress={ihandleAdd}>
+            <Text style={styles.addButtonText}> Add Ingredient </Text>
+          </TouchableOpacity>
 
-        <Text style={styles.sectionText}>Instructions</Text>
+          <Text style={styles.sectionText}>Instructions</Text>
 
-        {steps.map((input, index) => (  // New map function for steps
-          <View style={styles.listContainer} key={index}>
-            <View style={styles.stepsCell}>
-            <Text>Step {input.number}</Text>
-            <TextInput
-              multiline = {true}
-              style = {styles.descBox}
-              name="step"
-              placeholder="Describe this step..."
-              onChangeText={(value) => shandleChange(value, index)}
-            />
-          </View></View>
-        ))}
+          {steps.map((input, index) => (  // New map function for steps
+            <View style={styles.listContainer} key={index}>
+              <View style={styles.stepsCell}>
+              <Text>Step {input.number}</Text>
+              <TextInput
+                multiline = {true}
+                style = {styles.descBox}
+                name="step"
+                placeholder="Describe this step..."
+                onChangeText={(value) => shandleChange(value, index)}
+              />
+            </View></View>
+          ))}
 
-        {/* Add Step Button */}
-        <TouchableOpacity style={[styles.button, styles.addButton]} onPress={shandleAdd}>
-          <Text style={styles.addButtonText}> Add Step </Text>
-        </TouchableOpacity>
+          {/* Add Step Button */}
+          <TouchableOpacity style={[styles.button, styles.addButton]} onPress={shandleAdd}>
+            <Text style={styles.addButtonText}> Add Step </Text>
+          </TouchableOpacity>
 
-        {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}  
-        
-        {/* Upload Image Button */}
-        <DashedButton onPress = {handleImageUpload} text="Upload Image"/>
-        
+          {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}  
+          
+          {/* Upload Image Button */}
+          <DashedButton onPress = {handleImageUpload} text="Upload Image"/>
+          
 
-        {/* Submit Button */}
-        <TouchableOpacity style={[styles.button, styles.submitButton]} onPress={handleSubmit}>
-          <Text style={styles.submitText}> SUBMIT </Text>
-        </TouchableOpacity>
+          {/* Submit Button */}
+          <TouchableOpacity style={[styles.button, styles.submitButton]} onPress={handleSubmit}>
+            <Text style={styles.submitText}> SUBMIT </Text>
+          </TouchableOpacity>
 
-      </View>
-    </ScrollView>   
-  </KeyboardAvoidingView>
+        </View>
+      </ScrollView>   
+    </KeyboardAvoidingView>
+  </SafeAreaView>
   );
 }
 
