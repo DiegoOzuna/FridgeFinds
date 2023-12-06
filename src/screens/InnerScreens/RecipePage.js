@@ -181,7 +181,7 @@ const handleFavorite = async (id) => {
   return(
     <View style={styles.container}>
       <Text style={[styles.screenText, {alignSelf: 'flex-start'}]}>Recipes</Text>
-      <View style = {[styles.top, {marginTop: -30}]}>
+      <View style = {[styles.top, {marginTop: -35}]}>
         <StatusBar style='auto'/>
         <TextInput
           style={styles.input}

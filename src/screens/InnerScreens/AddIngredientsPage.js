@@ -91,29 +91,29 @@ export default function AddItem (){
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'flex-start',
-       // flexDirection:'row',
-        alignItems: 'center',
-        direction:'inherit',
-        backgroundColor: '#fff', // Background color of the app.,
-        color: '#3ac78b'
-      },
-      button: {
-        backgroundColor: '#62d2a2',
-        width: '60%',
-        padding: 15,
-        borderRadius: 10,
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start'
-    
-      },
-      buttonText: {
-        color: '#fff',
-        fontSize: 16
-    
-      },
+  container: {
+      flex: 1,
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      direction:'inherit',
+      backgroundColor: '#fff', // Background color of the app.,
+      color: '#3ac78b'
+  },
+
+  button: {
+    backgroundColor: '#62d2a2',
+    width: '60%',
+    padding: 15,
+    borderRadius: 10,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start'
+  },
+
+  buttonText: {
+    color: '#fff',
+    fontSize: 16
+  },
+
   main: {
     flex: 1,
     padding: 30,
@@ -122,6 +122,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     color: '#3ac78b'
   },
+
   title: {
     marginBottom: 20,
     fontSize: 30,
@@ -129,6 +130,7 @@ const styles = StyleSheet.create({
     color: '#34785a',
     fontWeight: '900',
   },
+
   itemInput: {
     height: 50,
     padding: 4,
@@ -139,11 +141,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     color: 'black'
   },
+
   buttonText: {
     fontSize: 18,
     color: '#111',
     alignSelf: 'center'
   },
+
   button: {
     height: 45,
     flexDirection: 'row',
@@ -156,8 +160,9 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     justifyContent: 'center'
   },
+
   text: {
     fontSize: 20,
     color: '#333333'
-  }
+  },
 });

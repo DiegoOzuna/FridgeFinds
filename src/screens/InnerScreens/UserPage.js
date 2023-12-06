@@ -1,7 +1,7 @@
 //place holder for area where user's current ingredients are
 //These imports are to have our bottomnavigation bar be on screen
 import React from 'react';
-import { StatusBar, Text, TextInput, FlatList, TouchableOpacity,Alert } from 'react-native';
+import { StatusBar, Text, TextInput, FlatList, TouchableOpacity,Alert, VirtualizedList } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 
 import BottomNavigationBar from '../components/BottomNavigatorBar';
@@ -63,12 +63,17 @@ const UserPage = () => {
   
   return (
     <View style={styles.container}>
+      {/* Screen Title*/}
       <Text style={[styles.screenText, {alignSelf: 'flex-start'}]}>myFridge</Text>
+
+      {/* Sign Out Btn*/}
       <TouchableOpacity
         style = {[styles.button, styles.signOutBtn]}
         onPress={handleSignOut}>
         <Text style = {[styles.displayText, styles.signoutTxt]}>Sign Out</Text>
       </TouchableOpacity>
+
+      {/* Top Bar w/ Search & Add Ingredient Button*/}
       <StatusBar style='auto'/>
       <View style={styles.topLeftContainer}>
         <TouchableOpacity
@@ -79,11 +84,17 @@ const UserPage = () => {
         <TouchableOpacity
         style = {[styles.button, {marginLeft: '5%'}]}
         onPress={handleSubmit}>
-          <Text style = {styles.displayText}>Add Ingredient</Text>
+          <Text style = {styles.displayText}>Add Item</Text>
         </TouchableOpacity>
       </View>
+
+      {/* List of Items*/}
+        <View style={styles.itemContainer}>
+          
+        </View>
+
+
       <BottomNavigationBar/>
-      
     </View>
 
     
@@ -170,6 +181,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#dcdedd',
     color: '#fff',
   },
+
+// Item List
+  itemContainer: {
+
+  },
+
 });
 
 export default UserPage;

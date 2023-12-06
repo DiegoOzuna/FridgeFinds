@@ -75,11 +75,12 @@ const ShopList = () =>  {
 
     return(
       <View style={styles.container}>
-        <View style = {styles.top}>
+        <Text style={[styles.screenText, {alignSelf: 'flex-start'}]}>Groceries</Text>
+        <View style = {[styles.top, {marginTop: '-13.1%'}]}>
         <StatusBar style='auto'/>
         <TextInput
           style={styles.input}
-          placeholder='Add item to list'
+          placeholder='Add Item to list'
           value={inputValue}
           onChangeText={text => setInputValue(text)} />
         <TouchableOpacity
@@ -179,6 +180,14 @@ const styles = StyleSheet.create({
     lineHeight: 54,
     paddingRight: 1,
     textAlignVertical: 'center',
+  },
+
+// Screen Title ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  screenText: {
+    fontSize: 50,
+    color: '#34785a',
+    fontWeight: '900',
+    marginLeft: '2%',
   },
 
 });
