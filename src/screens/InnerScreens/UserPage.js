@@ -1,5 +1,24 @@
-//place holder for area where user will be able to search for recipes.
-//These imports are to have our bottomnavigation bar be on screen
+/*Summary of what this page achieves
+
+This page is was created for the user to input text in a text field and by pressing the "plus" button on the side, would be able to place that ingredient into their myIngredientslist.
+
+When the user inputs an ingredient successfully, we automatically put that ingredient into the unlabled container.
+All ingredients in the page would be draggable meaning that the user can press and hold to drag the item around the screen, and ideally into the other containers so that they can
+categorize their ingredients as needed.
+All ingredients also have a minus button tagged along with them to allow the user to delete the item from their list.
+
+Improvements that could be made: Debugging the structure of the drag and drop methods that were created from scratch would be ideal. Currently, when the user loads into the page,
+                                 the items need to be moved once, before the calculations of the containers and the draggable items work in the expected behavior. This also applies to 
+                                 whenever the user scrolls through the list; only one item is needed to be moved, before the calculations work again. The thought is that maybe the states 
+                                 of the dimensions of the containers are not being updated on load and whenever the user scrolls.
+
+                                 Additionally, it might be beneficial for the user to be able to include how many of one item they want, which currently does not exist.
+
+
+NOTE: THIS STRUCTURE IS THE SAME AS THE SHOPLISTPAGE.JS WITH THE ONLY DIFFERENCE BEING THE DATA ACCESSED WHICH IS myIngredients RATHER THAN grocerylist. 
+      ALSO THE OTHER DIFFERENCE IS THAT THIS PAGE HAS ANOTHER BUTTON WHICH IS THE SIGN OUT BUTTON.
+
+*/
 import React, {useState, useEffect, useRef} from 'react';
 import { StatusBar, TouchableOpacity, VirtualizedList, ScrollView} from 'react-native';
 import { StyleSheet, View} from 'react-native';

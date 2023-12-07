@@ -20,8 +20,8 @@ import ForgotPassword from './src/screens/ForgotPage';
 import UserPage from './src/screens/InnerScreens/UserPage';
 import ShopListPage from './src/screens/InnerScreens/ShopListPage';
 import RecipePage from './src/screens/InnerScreens/RecipePage';
-import SearchPage from './src/screens/InnerScreens/SearchPage';
-import AddRecipePage from './src/screens/InnerScreens/AddIngredientsPage';
+
+
 import RecipeForm from './src/screens/components/RecipeForm';
 
 export default function App() {
@@ -35,9 +35,7 @@ export default function App() {
 
         <Stack.Screen options={{headerShown: false, animation: 'default'}} name="UserPage" component={UserPage} /> 
         <Stack.Screen options={{headerShown: false, animation: 'default'}} name="RecipePage" component={RecipePage} /> 
-        <Stack.Screen options={{headerShown: false, animation: 'default'}} name="ShopListPage" component={ShopListPage} /> 
-        <Stack.Screen options={{headerShown: false, animation: 'default'}} name="SearchPage" component={SearchPage} /> 
-        <Stack.Screen options={{headerShown: false, animation: 'default'}} name="AddRecipePage" component={AddRecipePage} />
+        <Stack.Screen options={{headerShown: false, animation: 'default'}} name="ShopListPage" component={ShopListPage} />
         <Stack.Screen options={{headerShown: false, animation: 'default'}} name="RecipeForm" component={RecipeForm} />
       </Stack.Navigator>
     </NavigationContainer>

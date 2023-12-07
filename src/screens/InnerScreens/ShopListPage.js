@@ -1,5 +1,23 @@
-//place holder for area where user will be able to search for recipes.
-//These imports are to have our bottomnavigation bar be on screen
+/*Summary of what this page achieves
+
+This page is was created for the user to input text in a text field and by pressing the "plus" button on the side, would be able to place that ingredient into their grocerylist.
+
+When the user inputs an ingredient successfully, we automatically put that ingredient into the unlabled container.
+All ingredients in the page would be draggable meaning that the user can press and hold to drag the item around the screen, and ideally into the other containers so that they can
+categorize their ingredients as needed.
+All ingredients also have a minus button tagged along with them to allow the user to delete the item from their list.
+
+Improvements that could be made: Debugging the structure of the drag and drop methods that were created from scratch would be ideal. Currently, when the user loads into the page,
+                                 the items need to be moved once, before the calculations of the containers and the draggable items work in the expected behavior. This also applies to 
+                                 whenever the user scrolls through the list; only one item is needed to be moved, before the calculations work again. The thought is that maybe the states 
+                                 of the dimensions of the containers are not being updated on load and whenever the user scrolls.
+
+                                 Additionally, it might be beneficial for the user to be able to include how many of one item they want, which currently does not exist.
+
+
+
+
+*/
 import React, {useState, useEffect, useRef} from 'react';
 import { StatusBar, TouchableOpacity, VirtualizedList, ScrollView} from 'react-native';
 import { StyleSheet, View} from 'react-native';
@@ -8,7 +26,7 @@ import { Text, TextInput, Touchable, FlatList } from 'react-native';
 import { FIRESTORE_DB } from '../../firebase';  //database in our app
 import { FIREBASE_AUTH } from '../../firebase';
 
-///////////DELETE IF NO WORK pt1////////////////////////////
+///////////Imports for our drag and drop feature////////////////////////////
 import { PanResponder, Animated } from 'react-native';
 import { customAlphabet } from 'nanoid/non-secure';
 ///////////////////////////////////////////////////////////
@@ -20,7 +38,7 @@ import { getDoc, doc, updateDoc, arrayUnion, arrayRemove } from '@firebase/fires
 
 
 
-//DELETE IF NO WORK pt2///////////////////////////////////////
+////////////////////Needed animated components for handling draggable items///////////////////////////////////////
 const DraggableItem = ({ item, changeBucket, removeItem }) => {
   const pan = useRef(new Animated.ValueXY()).current;
 
@@ -35,11 +53,11 @@ const DraggableItem = ({ item, changeBucket, removeItem }) => {
 
 
   return (
-    <Animated.View //this is for the item itself, not da bucket.
+    <Animated.View //this is for the item itself, not the bucket.
     style={{ 
       transform: [{ translateX: pan.x }, { translateY: pan.y }], 
       borderWidth: 1,  // Add a border
-      borderColor: 'red',  // Choose a color for the border,
+      borderColor: 'green',  // Choose a color for the border,
       position: 'absoulte', // test
     }} 
     {...panResponder.panHandlers}
@@ -55,7 +73,7 @@ const DraggableItem = ({ item, changeBucket, removeItem }) => {
   </Animated.View>
   );
 };
-///////////////////////////////////////////////////
+////////////////////The bucket is the container where the list is being made, as items are added into///////////////////////////////
 const Bucket = React.forwardRef(({ bucket, id, changeBucket, setBucketLayout, removeItem, scrollOffset }, ref) => {
   useEffect(() => {
     if (ref.current) {
@@ -82,16 +100,16 @@ const Bucket = React.forwardRef(({ bucket, id, changeBucket, setBucketLayout, re
 //////////////////////////////////////////////////////////////////////////////////////
 
 const ShopList = () =>  { 
-  const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 10);
+  const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 10);  //this is used to make custom ids in our firestore entry so that the recipes have a unique key
   const user = FIREBASE_AUTH.currentUser;  //this should get us our current user
-  const database = FIRESTORE_DB;
-  const uid = user.uid;
+  const database = FIRESTORE_DB;           //this would get us our database instance
+  const uid = user.uid;                    //this would be the users uid if needed
 
   const [inputValue, setInputValue] = useState('');
   const [groceryList, setGroceryList] = useState([]);
   
 
-  /////////////DELETE IF NO WORK pt3//////////////////
+  /////////////All these variables here are used to filter out the ingredient entries from the user//////////////////
   const [unlabeled, setUnlabeled] = useState([]);
   const [produce, setProduce] = useState([]);
   const [meatAndSeafood, setMeatAndSeafood] = useState([]);
@@ -104,6 +122,7 @@ const ShopList = () =>  {
   const [other, setOther] = useState([]);
   const [bucketLayouts, setBucketLayouts] = useState({ unlabeled: null, produce: null, meatAndSeafood: null, dairy: null, bakeryAndBread: null, pantry: null, frozenFoods: null, beverages: null, snacks: null, other: null });
 
+  /////////All these variables here are used to make sure that the bucket's y values are relative to the whole page, in order to work with calculations using the panresponder from the draggableItems moving around/////////
   const unlabeledRef = useRef();
   const produceRef = useRef();
   const meanAndSeafoodRef = useRef();
@@ -117,14 +136,14 @@ const ShopList = () =>  {
   
   const [scrollOffset, setScrollOffset] = useState(0);
 
-  
+  //////////This function sets our bucket layout and also is used as an update to make sure that the dimension of the bucket are being reported///////////
   const setBucketLayout = (id, layout) => {
     setBucketLayouts((prevLayouts) => ({ ...prevLayouts, [id]: layout }));
   };
   const [scrollViewLayout, setScrollViewLayout] = useState(null);
 
 
-
+  //////This function handles the calculation of the draggable item to ensure that if they passed the "y requirement" of a certain field, then they are added into that field.////////
   const changeBucket = async (item, y, x) => {
     let newBucket;
     const adjustedY = y ;
@@ -313,7 +332,7 @@ const ShopList = () =>  {
     }
   };
   
-
+  //This function is basically used to remove an item from the render whenever the remove button is called, it then updates all buckets.//
   const removeItem = async (item) => {
     if(docRef){
       await updateDoc(docRef, {
@@ -335,22 +354,7 @@ const ShopList = () =>  {
   
     
 
-   const getGroceryList = async () => {
-      if(docRef) {
-        const docSnap = await getDoc(docRef);
-        const grocerylist = docSnap.get("grocerylist");
-        console.log(grocerylist); // This will print the array
-      }
-    };
-
-    const getItemCount = () => groceryList.length;
-
-    const renderItem = ({item, index}) => (
-      <DraggableItem key={item.id} item={item} changeBucket={changeBucket} removeItem={removeItem} />
-    );
-    
-
-  // // Code for Checkboxes (Delete when not useful)
+  // // Code for Checkboxes (Delete when not useful)               This is left behind in case the feature would be useful. The function is old, and would need to be updated in order to work.
   //   const Checkbox = ({ checked, onPress }) => (
   //     <TouchableOpacity onPress={onPress}>
   //       <View style={{ flexDirection: 'row', alignItems: 'center' }}>

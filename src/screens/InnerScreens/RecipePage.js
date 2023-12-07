@@ -1,3 +1,27 @@
+/* Summary of what this page achieves:
+
+This page will allow the user to look through the entire recipe entries stored in our firebase firestore, which all come from the users in our app. It allows them to 
+interact with the posts with three buttons, upvote, downvote, and favorite.
+
+The upvote and downvote buttons are what increment or decrement the vote counter on a specific recipe and recipes rely on this vote count to be displayed in an organized
+manner in our page. The top of the page would always be the highest count while the bottom would be the lowest.
+
+The favorite button, would make sure that whatever recipe the user decided to favorite, would be underneath the user. This way, if the user wants to only view their favorite recipe,
+the app only needs to check the users favorite list and retrieve the information from firebase firestore based on the recipe ids that were stored in this list.
+
+The user also has a text field where as they input text, the recipes are automatically responding to the change in text and are filtered through to return the user the recipe they 
+are searching for in our database. If there is none, they are returned a message, asking them to add an entry for us.
+
+
+Improvements that could be made: The vote counter seems to have a simple logic error. We are able to make sure the user is only able to vote once, but the way the votes are being handled
+                                 seem to be causing issues where if its the users first vote, it still applies the +2 or -2 respectively which could be caused from the asyncronous nature of
+                                 the function. Making sure there is checks would allow this to possibly be fixed.
+
+                                 The modal popup that occurs when the image is pressed also needs to be formatted a bit more to make sure all content is presented to the user.
+                                 Maybe the most simplest solution would be to use the safeareaview library within this modal. But adjusting the style of the modal would also be 
+                                 another method.
+
+*/
 import React, {useState, useEffect} from 'react';
 import { Modal, StatusBar, TouchableOpacity, Image, StyleSheet, View, Text, TextInput, FlatList, ScrollView, VirtualizedList } from 'react-native';
 import { useNavigation } from '@react-navigation/core';

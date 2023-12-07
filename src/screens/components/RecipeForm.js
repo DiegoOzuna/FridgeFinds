@@ -1,3 +1,14 @@
+/* Summary of what this page Achieves:
+It allows the user to input their information of ingredients and steps for the recipe they are posting. It also 
+takes care of the image that the user uploads to submit as the thumbnail for their recipe.
+
+If the user decides to cancel their upload, there is a button for them to do so, and it also clears out the image from the firebase storage.
+
+Improvements that could be made: Handle cancelation of images from the firebase storage when a user leaves the page by exiting the entire app without clicking the cancel button
+                                 Another improvement would be setting rules for the inputted information. For example, in the text feilds, it would make sense to check for data types int and string respectively
+                                 A restriction on the uploaded image would also make sense, making sure that each recipe has an image corresponding to it.
+
+*/
 import React, { useState, useEffect } from 'react';
 import { KeyboardAvoidingView, Image, ScrollView, View, TextInput, Button, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';  // Import the Dropdown component

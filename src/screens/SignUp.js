@@ -1,4 +1,18 @@
+/*Summary of what this page achieves
 
+This page allows for the user to sign up for our app. It has three text fields, the username, the email, and the password. When the account is being created, it asks
+firebase authentication to generate a unique user ID for this particular user to enable them to sign in in the future, should they sign out, and would require them to provide the password again.
+
+Note: when an account is made, the user is automatically signed in and navigated to the "inner screens".
+
+FurtherNote: when the account is made, the user ID is being held as a collection in our firebase firestore and is being initialized with data fields for the user to successfully interact
+             with the functions in the "inner screens". This makes sure that each user has their own field of data and also ensures that the other pages would work instantly without having
+             check for these fields.
+
+Improvements to be made: Make sure that the user email is an actual email through email verification. This would then allow for actual development to occur in the ForgotPage.js .
+
+
+*/
 import React, { useEffect, useState } from 'react' //this library allows us to keep user inputs
 import { KeyboardAvoidingView, StyleSheet, TextInput, Text, TouchableOpacity, View } from 'react-native'
 import { createUserWithEmailAndPassword } from 'firebase/auth'

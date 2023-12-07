@@ -1,3 +1,16 @@
+/*Summary of what this page achieves
+
+This page allows for the user to sign in using the account they already have. If they do not have an account, the user can go ahead and press the register button to be navigated to the
+SignUp screen. Other than that, this page just checks the information that is input and runs the authentication service provided by firebase to ensure credentails are passed and that the user
+becomes an "authorized" user. When this priveledge is detected, the user is navigated to the "inner screens" which is the where the apps main functions are.
+
+Something to note here is that when a user signs in, it is held asynchronously meaning that the user does not have to sign in again when they leave the app, unless they signed out.
+
+
+
+*/
+
+
 import { useNavigation } from '@react-navigation/core'
 import React, { useEffect, useState } from 'react' //this library allows us to keep user inputs
 import { KeyboardAvoidingView, StyleSheet, TextInput, Text, TouchableOpacity, View } from 'react-native'
