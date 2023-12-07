@@ -33,36 +33,51 @@ const DraggableItem = ({ item, changeBucket, removeItem }) => {
     },
   });
 
+
   return (
-    <Animated.View style={{ transform: [{ translateX: pan.x }, { translateY: pan.y }] }} {...panResponder.panHandlers}>
-      <View style={styles.itemContainer}>
-        <View style={styles.itemTextContainer}>
-          <Text style={styles.listItems}>{item.name}</Text>
-        </View>
-        <TouchableOpacity style={styles.rmvBtn} onPress={() => removeItem(item)}>
-          <View style={styles.whiteLine}/>
-        </TouchableOpacity>
+    <Animated.View //this is for the item itself, not da bucket.
+    style={{ 
+      transform: [{ translateX: pan.x }, { translateY: pan.y }], 
+      borderWidth: 1,  // Add a border
+      borderColor: 'red',  // Choose a color for the border,
+      position: 'absoulte', // test
+    }} 
+    {...panResponder.panHandlers}
+  >
+    <View style={styles.itemContainer}>
+      <View style={styles.itemTextContainer}>
+        <Text style={styles.listItems}>{item.name}</Text>
       </View>
-    </Animated.View>
+      <TouchableOpacity style={styles.rmvBtn} onPress={() => removeItem(item)}>
+        <View style={styles.whiteLine}/>
+      </TouchableOpacity>
+    </View>
+  </Animated.View>
   );
 };
 ///////////////////////////////////////////////////
-const Bucket = ({ bucket, id, changeBucket, setBucketLayout, removeItem }) => {
+const Bucket = React.forwardRef(({ bucket, id, changeBucket, setBucketLayout, removeItem, scrollOffset }, ref) => {
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.measureInWindow((x, y, width, height) => {
+        setBucketLayout(id, { x, y, width, height });
+      });
+    }
+  }, [bucket, scrollOffset]);
+
   return (
     <View
-      onLayout={(event) => {
-        const layout = event.nativeEvent.layout;
-        setBucketLayout(id, layout);
-      }}
+      ref={ref}
       style={{ borderWidth: 1, borderColor: 'black', padding: 10, margin: 10, width: 300 }}
     >
       <Text style={styles.bucketTitle}>{id}</Text>
       {bucket.map((item) => (
-        <DraggableItem key={item} item={item} changeBucket={changeBucket} removeItem={removeItem} />
+        <DraggableItem key={item.id} item={item} changeBucket={changeBucket} removeItem={removeItem} />
       ))}
     </View>
   );
-};
+});
+
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -74,6 +89,7 @@ const ShopList = () =>  {
 
   const [inputValue, setInputValue] = useState('');
   const [groceryList, setGroceryList] = useState([]);
+  
 
   /////////////DELETE IF NO WORK pt3//////////////////
   const [unlabeled, setUnlabeled] = useState([]);
@@ -88,81 +104,114 @@ const ShopList = () =>  {
   const [other, setOther] = useState([]);
   const [bucketLayouts, setBucketLayouts] = useState({ unlabeled: null, produce: null, meatAndSeafood: null, dairy: null, bakeryAndBread: null, pantry: null, frozenFoods: null, beverages: null, snacks: null, other: null });
 
+  const unlabeledRef = useRef();
+  const produceRef = useRef();
+  const meanAndSeafoodRef = useRef();
+  const dairyRef = useRef();
+  const bakeryAndBreadRef = useRef();
+  const pantryRef = useRef();
+  const frozenfoodsRef = useRef();
+  const beveragesRef = useRef();
+  const snacksRef = useRef();
+  const otherRef = useRef();
+  
+  const [scrollOffset, setScrollOffset] = useState(0);
+
+  
   const setBucketLayout = (id, layout) => {
     setBucketLayouts((prevLayouts) => ({ ...prevLayouts, [id]: layout }));
   };
+  const [scrollViewLayout, setScrollViewLayout] = useState(null);
+
 
 
   const changeBucket = async (item, y, x) => {
     let newBucket;
-    if (bucketLayouts.unlabeled && y >= bucketLayouts.unlabeled.y && y <= bucketLayouts.unlabeled.y + bucketLayouts.unlabeled.height) {
+    const adjustedY = y ;
+    if (bucketLayouts.unlabeled && adjustedY >= bucketLayouts.unlabeled.y && adjustedY <= bucketLayouts.unlabeled.y + bucketLayouts.unlabeled.height) {
       newBucket = 'unlabeled';
-    } else if (bucketLayouts.produce && y >= bucketLayouts.produce.y && y <= bucketLayouts.produce.y + bucketLayouts.produce.height) {
+    } else if (bucketLayouts.produce && adjustedY >= bucketLayouts.produce.y && adjustedY <= bucketLayouts.produce.y + bucketLayouts.produce.height) {
       newBucket = 'produce';
-    } else if (bucketLayouts.meatAndSeafood && y >= bucketLayouts.meatAndSeafood.y && y <= bucketLayouts.meatAndSeafood.y + bucketLayouts.meatAndSeafood.height) {
+    } else if (bucketLayouts.meatAndSeafood && adjustedY >= bucketLayouts.meatAndSeafood.y && adjustedY <= bucketLayouts.meatAndSeafood.y + bucketLayouts.meatAndSeafood.height) {
       newBucket = 'meatAndSeafood';
-    } else if (bucketLayouts.dairy && y >= bucketLayouts.dairy.y && y <= bucketLayouts.dairy.y + bucketLayouts.dairy.height) {
+    } else if (bucketLayouts.dairy && adjustedY >= bucketLayouts.dairy.y && adjustedY <= bucketLayouts.dairy.y + bucketLayouts.dairy.height) {
       newBucket = 'dairy';
-    } else if (bucketLayouts.bakeryAndBread && y >= bucketLayouts.bakeryAndBread.y && y <= bucketLayouts.bakeryAndBread.y + bucketLayouts.bakeryAndBread.height) {
+    } else if (bucketLayouts.bakeryAndBread && adjustedY >= bucketLayouts.bakeryAndBread.y && adjustedY <= bucketLayouts.bakeryAndBread.y + bucketLayouts.bakeryAndBread.height) {
       newBucket = 'bakeryAndBread';
-    } else if (bucketLayouts.pantry && y >= bucketLayouts.pantry.y && y <= bucketLayouts.pantry.y + bucketLayouts.pantry.height) {
+    } else if (bucketLayouts.pantry && adjustedY >= bucketLayouts.pantry.y && adjustedY <= bucketLayouts.pantry.y + bucketLayouts.pantry.height) {
       newBucket = 'pantry';
-    } else if (bucketLayouts.frozenFoods && y >= bucketLayouts.frozenFoods.y && y <= bucketLayouts.frozenFoods.y + bucketLayouts.frozenFoods.height) {
+    } else if (bucketLayouts.frozenFoods && adjustedY >= bucketLayouts.frozenFoods.y && adjustedY <= bucketLayouts.frozenFoods.y + bucketLayouts.frozenFoods.height) {
       newBucket = 'frozenFoods';
-    } else if (bucketLayouts.beverages && y >= bucketLayouts.beverages.y && y <= bucketLayouts.beverages.y + bucketLayouts.beverages.height) {
+    } else if (bucketLayouts.beverages && adjustedY >= bucketLayouts.beverages.y && adjustedY <= bucketLayouts.beverages.y + bucketLayouts.beverages.height) {
       newBucket = 'beverages';
-    } else if (bucketLayouts.snacks && y >= bucketLayouts.snacks.y && y <= bucketLayouts.snacks.y + bucketLayouts.snacks.height) {
+    } else if (bucketLayouts.snacks && adjustedY >= bucketLayouts.snacks.y && adjustedY <= bucketLayouts.snacks.y + bucketLayouts.snacks.height) {
       newBucket = 'snacks';
-    } else if (bucketLayouts.other && y >= bucketLayouts.other.y && y <= bucketLayouts.other.y + bucketLayouts.other.height) {
+    } else if (bucketLayouts.other && adjustedY >= bucketLayouts.other.y && adjustedY <= bucketLayouts.other.y + bucketLayouts.other.height) {
       newBucket = 'other';
     } else {
       // If the item is dropped outside of any bucket, move it back to its original bucket
       newBucket = item.category;
     }
-    // Remove the item from all buckets
-    setUnlabeled(prevItems => prevItems.filter(i => i.id !== item.id));
-    setProduce(prevItems => prevItems.filter(i => i.id !== item.id));
-    setMeatAndSeafood(prevItems => prevItems.filter(i => i.id !== item.id));
-    setDairy(prevItems => prevItems.filter(i => i.id !== item.id));
-    setBakeryAndBread(prevItems => prevItems.filter(i => i.id !== item.id));
-    setPantry(prevItems => prevItems.filter(i => i.id !== item.id));
-    setFrozenFoods(prevItems => prevItems.filter(i => i.id !== item.id));
-    setBeverages(prevItems => prevItems.filter(i => i.id !== item.id));
-    setSnacks(prevItems => prevItems.filter(i => i.id !== item.id));
-    setOther(prevItems => prevItems.filter(i => i.id !== item.id));
-    // Add the item to the new bucket
-    const newItem = { ...item, category: newBucket };
-    if (newBucket === 'unlabeled') {
-      setUnlabeled(prevItems => [...prevItems, newItem]);
-    } else if (newBucket === 'produce') {
-      setProduce(prevItems => [...prevItems, newItem]);
-    } else if (newBucket === 'meatAndSeafood') {
-      setMeatAndSeafood(prevItems => [...prevItems, newItem]);
-    } else if (newBucket === 'dairy') {
-      setDairy(prevItems => [...prevItems, newItem]);
-    } else if (newBucket === 'bakeryAndBread') {
-      setBakeryAndBread(prevItems => [...prevItems, newItem]);
-    } else if (newBucket === 'pantry') {
-      setPantry(prevItems => [...prevItems, newItem]);
-    } else if (newBucket === 'frozenFoods') {
-      setFrozenFoods(prevItems => [...prevItems, newItem]);
-    } else if (newBucket === 'beverages') {
-      setBeverages(prevItems => [...prevItems, newItem]);
-    } else if (newBucket === 'snacks') {
-      setSnacks(prevItems => [...prevItems, newItem]);
-    } else if (newBucket === 'other') {
-      setOther(prevItems => [...prevItems, newItem]);
-    }
-    // Update the item in Firestore
-    if(docRef){
-      await updateDoc(docRef, {
-        grocerylist: arrayRemove(item),
-      });
-      await updateDoc(docRef, {
+  
+    // Create a new state for each bucket
+  const newUnlabeled = unlabeled.filter(i => i.id !== item.id);
+  const newProduce = produce.filter(i => i.id !== item.id);
+  const newMeatAndSeafood = meatAndSeafood.filter(i => i.id !== item.id);
+  const newDairy = dairy.filter(i => i.id !== item.id);
+  const newBakeryAndBread = bakeryAndBread.filter(i => i.id !== item.id);
+  const newPantry = pantry.filter(i => i.id !== item.id);
+  const newFrozenFoods = frozenFoods.filter(i => i.id !== item.id);
+  const newBeverages = beverages.filter(i => i.id !== item.id);
+  const newSnacks = snacks.filter(i => i.id !== item.id);
+  const newOther = other.filter(i => i.id !== item.id);
+
+  // Add the item to the new bucket
+  const newItem = { ...item, category: newBucket };
+  if (newBucket === 'unlabeled') {
+    newUnlabeled.push(newItem);
+  } else if (newBucket === 'produce') {
+    newProduce.push(newItem);
+  } else if (newBucket === 'meatAndSeafood') {
+    newMeatAndSeafood.push(newItem);
+  } else if (newBucket === 'dairy') {
+    newDairy.push(newItem);
+  } else if (newBucket === 'bakeryAndBread') {
+    newBakeryAndBread.push(newItem);
+  } else if (newBucket === 'pantry') {
+    newPantry.push(newItem);
+  } else if (newBucket === 'frozenFoods') {
+    newFrozenFoods.push(newItem);
+  } else if (newBucket === 'beverages') {
+    newBeverages.push(newItem);
+  } else if (newBucket === 'snacks') {
+    newSnacks.push(newItem);
+  } else if (newBucket === 'other') {
+    newOther.push(newItem);
+  }
+
+  // Update the state of each bucket
+  setUnlabeled(newUnlabeled);
+  setProduce(newProduce);
+  setMeatAndSeafood(newMeatAndSeafood);
+  setDairy(newDairy);
+  setBakeryAndBread(newBakeryAndBread);
+  setPantry(newPantry);
+  setFrozenFoods(newFrozenFoods);
+  setBeverages(newBeverages);
+  setSnacks(newSnacks);
+  setOther(newOther);
+
+  // Update the item in Firestore
+  if(docRef){
+    await updateDoc(docRef, {
+      grocerylist: arrayRemove(item),
+    });
+    await updateDoc(docRef, {
         grocerylist: arrayUnion(newItem),
-      });
-    }
-  };
+    });
+  }
+};
+  
   
 
   /////////////////////////////////////////////////////////////////
@@ -175,12 +224,73 @@ const ShopList = () =>  {
     getDoc(docRef).then((snapshot) => {
       const data = snapshot.data();
       if(data && data.grocerylist){
-        setGroceryList(data.grocerylist);
+        // Initialize empty arrays for each bucket
+        const newUnlabeled = [];
+        const newProduce = [];
+        const newMeatAndSeafood = [];
+        const newDairy = [];
+        const newBakeryAndBread = [];
+        const newPantry = [];
+        const newFrozenFoods = [];
+        const newBeverages = [];
+        const newSnacks = [];
+        const newOther = [];
+  
+        // Distribute the items into their respective buckets
+        data.grocerylist.forEach(item => {
+          switch (item.category) {
+            case 'unlabeled':
+              newUnlabeled.push(item);
+              break;
+            case 'produce':
+              newProduce.push(item);
+              break;
+            case 'meatAndSeafood':
+              newMeatAndSeafood.push(item);
+              break;
+            case 'dairy':
+              newDairy.push(item);
+              break;
+            case 'bakeryAndBread':
+              newBakeryAndBread.push(item);
+              break;
+            case 'pantry':
+              newPantry.push(item);
+              break;
+            case 'frozenFoods':
+              newFrozenFoods.push(item);
+              break;
+            case 'beverages':
+              newBeverages.push(item);
+              break;
+            case 'snacks':
+              newSnacks.push(item);
+              break;
+            case 'other':
+              newOther.push(item);
+              break;
+            default:
+              console.log(`Unknown category: ${item.category}`);
+          }
+        });
+  
+        // Update the state of each bucket
+        setUnlabeled(newUnlabeled);
+        setProduce(newProduce);
+        setMeatAndSeafood(newMeatAndSeafood);
+        setDairy(newDairy);
+        setBakeryAndBread(newBakeryAndBread);
+        setPantry(newPantry);
+        setFrozenFoods(newFrozenFoods);
+        setBeverages(newBeverages);
+        setSnacks(newSnacks);
+        setOther(newOther);
       }
     }).catch((error) => {
       console.log(error);
     });
   }
+  
 
 
   useEffect(() => {
@@ -278,17 +388,27 @@ const ShopList = () =>  {
             <Text style={[styles.addButtonText, {marginLeft: -1}]}> + </Text>
           </TouchableOpacity>
         </View>
-          <ScrollView>
-            <Bucket bucket={unlabeled} id='unlabeled' changeBucket={changeBucket} setBucketLayout={setBucketLayout} removeItem={removeItem} />
-            <Bucket bucket={produce} id='produce' changeBucket={changeBucket} setBucketLayout={setBucketLayout} removeItem={removeItem} />
-            <Bucket bucket={meatAndSeafood} id='meatAndSeafood' changeBucket={changeBucket} setBucketLayout={setBucketLayout} removeItem={removeItem} />
-            <Bucket bucket={dairy} id='dairy' changeBucket={changeBucket} setBucketLayout={setBucketLayout} removeItem={removeItem} />
-            <Bucket bucket={bakeryAndBread} id='bakeryAndBread' changeBucket={changeBucket} setBucketLayout={setBucketLayout} removeItem={removeItem} />
-            <Bucket bucket={pantry} id='pantry' changeBucket={changeBucket} setBucketLayout={setBucketLayout} removeItem={removeItem} />
-            <Bucket bucket={frozenFoods} id='frozenFoods' changeBucket={changeBucket} setBucketLayout={setBucketLayout} removeItem={removeItem} />
-            <Bucket bucket={beverages} id='beverages' changeBucket={changeBucket} setBucketLayout={setBucketLayout} removeItem={removeItem} />
-            <Bucket bucket={snacks} id='snacks' changeBucket={changeBucket} setBucketLayout={setBucketLayout} removeItem={removeItem} />
-            <Bucket bucket={other} id='other' changeBucket={changeBucket} setBucketLayout={setBucketLayout} removeItem={removeItem} />
+        <ScrollView
+          onScroll={(event) => {
+            const offset = event.nativeEvent.contentOffset.y;
+            setScrollOffset(offset);
+          }}
+          scrollEventThrottle={16}
+          onLayout={(event) => {
+            const layout = event.nativeEvent.layout;
+            setScrollViewLayout(layout);
+          }}
+        >
+            <Bucket scrollOffset={setScrollOffset} ref={unlabeledRef} bucket={unlabeled} id='unlabeled' changeBucket={changeBucket} setBucketLayout={setBucketLayout} removeItem={removeItem} />
+            <Bucket scrollOffset={setScrollOffset} ref={produceRef} bucket={produce} id='produce' changeBucket={changeBucket} setBucketLayout={setBucketLayout} removeItem={removeItem} />
+            <Bucket scrollOffset={setScrollOffset} ref={meanAndSeafoodRef} bucket={meatAndSeafood} id='meatAndSeafood' changeBucket={changeBucket} setBucketLayout={setBucketLayout} removeItem={removeItem} />
+            <Bucket scrollOffset={setScrollOffset} ref={dairyRef} bucket={dairy} id='dairy' changeBucket={changeBucket} setBucketLayout={setBucketLayout} removeItem={removeItem} />
+            <Bucket scrollOffset={setScrollOffset} ref={bakeryAndBreadRef} bucket={bakeryAndBread} id='bakeryAndBread' changeBucket={changeBucket} setBucketLayout={setBucketLayout} removeItem={removeItem} />
+            <Bucket scrollOffset={setScrollOffset} ref={pantryRef} bucket={pantry} id='pantry' changeBucket={changeBucket} setBucketLayout={setBucketLayout} removeItem={removeItem} />
+            <Bucket scrollOffset={setScrollOffset} ref={frozenfoodsRef} bucket={frozenFoods} id='frozenFoods' changeBucket={changeBucket} setBucketLayout={setBucketLayout} removeItem={removeItem} />
+            <Bucket scrollOffset={setScrollOffset} ref={beveragesRef} bucket={beverages} id='beverages' changeBucket={changeBucket} setBucketLayout={setBucketLayout} removeItem={removeItem} />
+            <Bucket scrollOffset={setScrollOffset} ref={snacksRef} bucket={snacks} id='snacks' changeBucket={changeBucket} setBucketLayout={setBucketLayout} removeItem={removeItem} />
+            <Bucket scrollOffset={setScrollOffset} ref={otherRef} bucket={other} id='other' changeBucket={changeBucket} setBucketLayout={setBucketLayout} removeItem={removeItem} />
           </ScrollView>
         <BottomNavigationBar/>
       </SafeAreaView>
