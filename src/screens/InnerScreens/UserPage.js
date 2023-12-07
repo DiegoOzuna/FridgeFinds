@@ -7,6 +7,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, TextInput, Touchable, FlatList } from 'react-native';
 import { FIRESTORE_DB } from '../../firebase';  //database in our app
 import { FIREBASE_AUTH } from '../../firebase';
+import { signOut } from "firebase/auth";
+import { useNavigation } from '@react-navigation/core'
 
 ///////////DELETE IF NO WORK pt1////////////////////////////
 import { PanResponder, Animated } from 'react-native';
@@ -86,6 +88,7 @@ const UserPage = () =>  {
   const user = FIREBASE_AUTH.currentUser;  //this should get us our current user
   const database = FIRESTORE_DB;
   const uid = user.uid;
+  const navigation = useNavigation();
 
   const [inputValue, setInputValue] = useState('');
   const [myIngredients, setmyIngredients] = useState([]);
@@ -338,12 +341,32 @@ const UserPage = () =>  {
     const renderItem = ({item, index}) => (
       <DraggableItem key={item.id} item={item} changeBucket={changeBucket} removeItem={removeItem} />
     );
+
+  //handlesignout signs out user and redirects back to login
+  const handleSignOut = () => {
+    signOut(FIREBASE_AUTH).then(() => {
+      console.log('User signed out!');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+    }).catch((error) => {
+      console.error('Error signing out: ', error);
+    });
+  };
   
 
     return(
       <SafeAreaView style={styles.container}>
+
+        {/* Sign Out Btn*/}
+      <TouchableOpacity
+        style = {[styles.button, styles.signOutBtn]}
+        onPress={handleSignOut}>
+        <Text style = {[styles.displayText, styles.signoutTxt]}>Sign Out</Text>
+      </TouchableOpacity>
         
-        <Text style={[styles.screenText, {alignSelf: 'flex-start'}]}>Groceries</Text>
+        <Text style={[styles.screenText, {alignSelf: 'flex-start'}]}>myFridge</Text>
         <View style = {[styles.top, {marginTop: '-13.1%'}]}>
         <StatusBar style='auto'/>
           <TextInput
@@ -483,6 +506,41 @@ const styles = StyleSheet.create({
     lineHeight: 54,
     paddingRight: 1,
     textAlignVertical: 'center',
+  },
+
+// Sign Out Btn ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  button: {
+    backgroundColor: '#62d2a2',
+    width: '45%',
+    padding: 5,
+    borderRadius: 10,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+
+  signOutBtn: {
+    backgroundColor: '#dcdedd',
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: '3%',
+    right: '4%',
+    paddingHorizontal: '1%',
+    paddingVertical: '2%',
+    borderRadius: 10,
+    width: '30%'
+  },
+
+  signoutTxt: {
+    backgroundColor: '#dcdedd',
+    color: '#fff',
+  },
+
+  displayText: {
+    alignItems: 'flex-start',
+    backgroundColor: '#62d2a2',
+    color: '#fff',
+    fontSize: 16
   },
 
 // Screen Title ~~~~~~~~~~~~~~~~~~~~~~~~~~
