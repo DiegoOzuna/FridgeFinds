@@ -9,7 +9,7 @@ First. Clone this project.
 
 Then, open the code directory in a terminal and run the following...<br/>
 npm install <br/>
-npm react-native-ico-material-design <br/>
+npm react-native-icon-material-design <br/>
 npm install @react-navigation/native <br/>
 npm install @react-navigation/native-stack <br/>
 npm install react-native-screens react-native-safe-area-context <br/>
