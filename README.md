@@ -1,7 +1,11 @@
 # FridgeFinds
 
 The following is a small presentation about the functionalities we have. <br/>
-https://docs.google.com/presentation/d/1RxF6e-Vn6Bhy-pysq-08PkPONvL3MbLYGCJaC0DBYeA/edit?usp=sharing <br/>
+[View FINAL PRESENTATION - FRIDGE FINDS.pdf](FINAL%20PRESENTATION%20-%20FRIDGE%20FINDS.pdf)
+
+Additionally, here is a demo showing all functions currently existing in the app.
+[![Watch the video](https://img.youtube.com/vi/CkLVvpr9TEw/0.jpg)](https://www.youtube.com/watch?v=CkLVvpr9TEw)
+
 
 A LOG ON HOW TO GET GITHUB APP WORKING.
 
